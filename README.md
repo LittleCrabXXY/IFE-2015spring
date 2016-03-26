@@ -1,4 +1,4 @@
-# IFE2015001
+# IFE-2015spring
 
 这是[百度前端技术学院2015第一期](https://github.com/baidu-ife/ife)的任务部分
 
