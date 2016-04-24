@@ -1,0 +1,279 @@
+@charset "utf-8";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/*common style: header + footer*/
+/*header style*/
+body {
+    min-width: 980px;
+    background-color: #eee;
+}
+
+#header {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    background-color: #29b6ea;
+}
+
+#header-wrap {
+    position: relative;
+    margin: 0 auto;
+    width: 980px;
+    height: 80px;
+}
+
+#header-wrap > img {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+}
+
+#header-nav {
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+    list-style: none;
+}
+
+#header-nav > li {
+    float: left;
+    margin-left: 28px;
+}
+
+#header-nav a {
+    font: 14px "SimSun", serif;
+    text-decoration: none;
+    color: #fff;
+}
+
+#header > a {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    display: block;
+    width: 30px;
+    height: 34px;
+}
+
+@media (max-width: 980px) {
+    #header > a {
+        display: none;
+    }
+}
+
+/*footer style*/
+#footer {
+    width: 100%;
+    background-color: #000;
+}
+
+#footer-nav {
+    border-bottom: 1px solid #333;
+    font-size: 0;
+}
+
+#footer-nav > ul {
+    position: relative;
+    left: 50%;
+    display: inline-block;
+    list-style: none;
+}
+
+#footer-nav li {
+    float: left;
+    position: relative;
+    right: 50%;
+}
+
+#footer-nav li + li {
+    margin-left: 25px;
+}
+
+#footer-nav a {
+    font: 12px "SimSun", serif;
+    line-height: 35px;
+    text-decoration: none;
+    color: #fff;
+}
+
+#links {
+    overflow: auto;
+    margin: 0 auto;
+    width: 980px;
+}
+
+#links > div {
+    float: left;
+    margin: 40px 0 75px;
+    width: 196px;
+}
+
+#links h3 {
+    margin-bottom: 30px;
+    font: normal 12px "SimSun", serif;
+    color: #ccc;
+}
+
+#links a {
+    font: 12px/2 "SimSun", serif;
+    text-decoration: none;
+    color: #fff;
+}
+
+#links a:hover {
+    text-decoration: underline;
+}
+
+#copyright {
+    font-size: 0;
+    text-align: center;
+}
+
+#copyright  > p {
+    margin-bottom: 20px;
+    font: 12px "SimSun", serif;
+    color: #fff;
+}
+
+#copyright > a {
+    display: inline-block;
+    width: 30px;
+    height: 34px;
+}
+
+
+/*main style: index + blog + gallery + about*/
+/*index-main style*/
+#index-main > img {
+    display: block;
+    width: 100%;
+    height: 576px;
+}
+
+#banner {
+    position: relative;
+    margin: -576px auto 0;
+    width: 980px;
+    height: 576px;
+}
+
+#banner-text {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    padding: 10px 10px 30px;
+    width: 360px;
+    height: 120px;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    /*old webkit*/
+    background: -webkit-gradient(linear, center top, center bottom,
+        color-stop(0%, rgba(255,255,255,.7)),
+        color-stop(75%, rgba(255,255,255,.5)),
+        color-stop(100%, rgba(255,255,255,0)));
+    /*new webkit*/
+    background: -webkit-linear-gradient(top,
+        rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 75%, rgba(255,255,255,0) 100%);
+    /*mozilla*/
+    background: -moz-linear-gradient(top,
+        rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 75%, rgba(255,255,255,0) 100%);
+    /*opera*/
+    background: -o-linear-gradient(top,
+        rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 75%, rgba(255,255,255,0) 100%);
+    /*兼容，包括IE10+*/
+    background: linear-gradient(to bottom,
+        rgba(255,255,255,.7) 0%, rgba(255,255,255,.5) 75%, rgba(255,255,255,0) 100%);
+}
+
+#banner-text > h2 {
+    font-size: 14px;
+    text-align: right;
+}
+
+#banner-text > p {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    text-indent: 2em;
+}
+
+#show {
+    overflow: hidden;
+    margin: 10px auto 110px;
+    width: 980px;
+}
+
+.show-box {
+    float: left;
+    margin-bottom: -10000px;
+    padding: 10px 10px 10000px;
+    width: 320px;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    background-color: #fff;
+}
+
+.show-box + .show-box {
+    margin-left: 10px;
+}
+
+.show-box > img {
+    width: 300px;
+    height: 180px;
+}
+
+.show-box > p {
+    margin: 0 20px;
+    font-size: 12px;
+    line-height: 1.7;
+    text-indent: 2em;
+}
+
+.show-box > img + p {
+    margin-top: 15px;
+}
+
+.show-box > p:last-child {
+    margin-bottom: 25px;
+}
+
+#self-intro {
+    padding-bottom: 190px;
+    width: 100%;
+    background-color: #fff;
+}
+
+#self-intro > img {
+    position: relative;
+    top: -50px;
+    left: 50%;
+    display: block;
+    border-radius: 80px;
+    margin-left: -80px;
+    width: 160px;
+    height: 160px;
+}
+
+#self-intro > h1 {
+    margin: 0 auto;
+    width: 600px;
+    font: 20px "Century Gothic", "Comic Sans MS", "Times New Roman", sans-serif;
+    text-align: center;
+}
+
+#self-intro > p {
+    margin: 30px auto 0;
+    width: 600px;
+    font-size: 14px;
+}
+
+/*blog-main style*/
+/*gallery-main style*/
+/*about-main style*/
