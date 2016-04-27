@@ -408,6 +408,7 @@ body {
 
 #keywords {
     border: 1px solid #ddd;
+    outline: none;
     width: 170px;
     height: 40px;
     font-size: 14px;
@@ -417,12 +418,25 @@ body {
     color: #999;
 }
 
+#keywords:hover,
+#keywords:focus {
+    border-color: #343434;
+    color: #333;
+}
+
 #go {
-    border: none;
+    border: 1px solid #ddd;
+    border-left: none;
+    outline: none;
     width: 50px;
     height: 42px;
     font-size: 20px;
     color: #fff;
+}
+
+#go:hover {
+    border-color: #999;
+    background-color: #999;
 }
 
 #category {
@@ -533,5 +547,17 @@ body {
 }
 
 /*gallery-main style*/
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*about-main style*/
