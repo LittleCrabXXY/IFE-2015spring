@@ -272,6 +272,7 @@ body {
     margin: 30px auto 0;
     width: 600px;
     font-size: 14px;
+    text-indent: 2em;
 }
 
 /*blog-main style*/
@@ -804,3 +805,82 @@ body {
 }
 
 /*about-main style*/
+#about {
+    margin: 100px auto 25px;
+    width: 980px;
+}
+
+#about-main,
+#about-extra {
+    width: 487px;
+    background-color: #fff;
+}
+
+#about-main {
+    float: right;
+    padding-bottom: 50px;
+}
+
+#about-main > div {
+    position: relative;
+    padding: 130px 140px 25px 30px;
+}
+
+#about-avatar {
+    position:absolute;
+    top: -70px;
+    left: -90px;
+    border: 10px solid #eee;
+    border-radius: 50%;
+    width: 160px;
+    height: 160px;
+}
+
+.about-icon {
+    position: absolute;
+    top: 0;
+    left: -55px;
+    border: 5px solid #eee;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+#about-main h2 {
+    position: absolute;
+    right: 115%;
+    font: 700 22px "SimSun", serif;
+    white-space: nowrap;    /* 禁止文字换行*/
+}
+
+#about-main p {
+    font: 14px/1.8 "SimSun", serif;
+    text-indent: 2em;
+}
+
+#about-main .sub-p {
+    font: 12px/1.8 "SimSun", serif;
+    text-indent: 27px;
+}
+
+#about-main span {
+    position: absolute;
+    left: -38px;
+    display: block;
+    border: 5px solid #eee;
+    border-radius: 10px;
+    width: 60px;
+    height: 25px;
+    font: 14px/25px "SimSun", serif;
+    text-align: center;
+    background-color: #fff;
+    color: #666;
+}
+
+#about-main .sub-list {
+    margin-top: 30px;
+}
+
+#about-extra {
+    height: 967px;
+}
