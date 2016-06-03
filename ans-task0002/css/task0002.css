@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding: 15px;
+}
+
+.blocks {
+    border: 5px solid #ccc;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 15px;
+}
+
+.blocks p {
+    font: 14px/1.5 "Microsoft YaHei", sans-serif;
+    text-indent: 2em;
+}

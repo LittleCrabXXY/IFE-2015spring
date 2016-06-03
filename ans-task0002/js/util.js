@@ -1,0 +1,114 @@
+// 判断arr是否为一个数组，返回一个bool值
+function isArray(arr) {
+    return arr instanceof Array;
+}
+
+// 判断fn是否为一个函数，返回一个bool值
+function isFunction(fn) {
+    var flag = false;
+    if (typeof fn == "function") {
+        flag = true;
+    }
+    return flag;
+}
+
+// 使用递归来实现一个深度克隆，可以复制一个目标对象，返回一个完整拷贝
+// 被复制的对象类型会被限制为数字、字符串、布尔、日期、数组、Object对象。不会包含函数、正则对象等
+function cloneObject(src) {
+    var obj;
+    switch (typeof src) {
+        case "number":
+            obj = src;
+            break;
+        case "string":
+            obj = src;
+            break;
+        case "boolean":
+            obj = src;
+            break;
+        case "object":
+            if (src instanceof Date) {
+                obj = new Date(src);
+            } else if (src instanceof Array) {
+                obj = [];   // 对象字面量表示法 优于使用 new Array()
+                for (var arrProp in src) {
+                    obj[arrProp] = cloneObject(src[arrProp]);
+                }
+            } else if (src instanceof Object) {
+                obj = {};   // 对象字面量表示法 优于使用 new Object()
+                for (var objProp in src) {
+                    // 方括号表示法访问对象属性：优点是可以通过变量来访问属性
+                    obj[objProp] = cloneObject(src[objProp]);
+                }
+            }
+            break;
+        default:
+            break;
+    }
+    return obj;
+}
+
+// 对数组进行去重操作，只考虑数组中元素为数字或字符串，返回一个去重后的数组
+function uniqArray(arr) {
+    var unique = [];
+    arr.forEach(function(item) {
+        if (unique.indexOf(item) == -1) {
+            unique.push(item);
+        }
+    });
+    return unique;
+}
+
+// 实现一个简单的trim函数，用于去除一个字符串头部和尾部的空白字符
+// 假定空白字符只有半角空格、Tab
+// 练习通过循环，以及字符串的一些基本方法，分别扫描字符串str头部和尾部是否有连续的空白字符，并且删掉他们
+// 最后返回一个完成去除的字符串
+function simpleTrim(str) {
+    var strNoSpace = "", startIndex = 0, endIndex = str.length;
+    for (var i = 0; i < str.length; i++) {
+        if (str[i]!=' ' && str[i]!='\t') {
+            startIndex = i;
+            break;
+        }
+    }
+    for (i = str.length - 1; i >= 0; i--) {
+        if (str[i]!=' ' && str[i]!='\t') {
+            endIndex = i + 1;
+            break;
+        }
+    }
+    strNoSpace = str.substring(startIndex, endIndex);
+    return strNoSpace;
+}
+
+// 对字符串头尾进行空格字符的去除、包括空格、Tab等，返回一个字符串
+// 尝试使用一行简洁的正则表达式完成该题目
+function trim(str) {
+    return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+// 实现一个遍历数组的方法，针对数组中每一个元素执行fn函数，并将数组索引和元素作为参数传递
+// 其中fn函数可以接受两个参数：item和index
+function each(arr, fn) {
+    arr.forEach(function(item, index) {
+        fn(item, index);
+    });
+}
+
+// 获取一个对象里面第一层元素的数量，返回一个整数
+function getObjectLength(obj) {
+    // Object.keys()返回对象自身所有可枚举属性的属性名数组
+    return Object.keys(obj).length;
+}
+
+// 判断是否为邮箱地址
+function isEmail(emailStr) {
+    var reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/g;
+    return reg.test(emailStr);
+}
+
+// 判断是否为手机号
+function isMobilePhone(phone) {
+    var reg = /1\d{10}/g;
+    return reg.test(phone);
+}
