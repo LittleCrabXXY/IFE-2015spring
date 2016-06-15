@@ -1,3 +1,6 @@
+/**
+ * 2.JavaScript数据类型及语言基础
+ */
 // 判断arr是否为一个数组，返回一个bool值
 function isArray(arr) {
     return arr instanceof Array;
@@ -112,3 +115,109 @@ function isMobilePhone(phone) {
     var reg = /1\d{10}/g;
     return reg.test(phone);
 }
+
+
+/**
+ * 3.DOM
+ */
+// 为element增加一个样式名为newClassName的新样式
+function addClass(element, newClassName) {
+    var cName = element.className;
+    if (cName.indexOf(newClassName) == -1) {
+        if (cName.length === 0) {
+            cName = newClassName;
+        } else {
+            cName += " " + newClassName;
+        }
+        element.className = cName;
+    }
+}
+
+// 移除element中的样式oldClassName
+function removeClass(element, oldClassName) {
+    var cName = element.className;
+    if (cName.indexOf(oldClassName) != -1) {
+        var arrCName = cName.split(' ');
+        arrCName.splice(arrCName.indexOf(oldClassName), 1);
+        if (arrCName.length > 0) {
+            cName = arrCName.join(' ');
+            element.className = cName;
+        } else {
+            element.removeAttribute("class");
+        }
+    }
+}
+
+// 判断siblingNode和element是否为同一个父元素下的同一级的元素，返回bool值
+function isSiblingNode(element, siblingNode) {
+    return element.parentNode === siblingNode.parentNode;
+}
+
+// 获取element相对于浏览器窗口的位置，返回一个对象{x, y}
+function getPosition(element) {
+    var actualLeft = element.offsetLeft;
+    var actualTop = element.offsetTop;
+    var current = element.offsetParent;
+    while (current !== null) {
+        actualLeft += current.offsetLeft;
+        actualTop += current.offsetTop;
+        current = current.offsetParent;
+    }
+    // scrollLeft和scrollTop的 混杂/兼容模式 || 标准模式
+    actualLeft -= document.body.scrollLeft || document.documentElement.scrollLeft;
+    actualTop -= document.body.scrollTop || document.documentElement.scrollTop;
+    return {
+        x: actualLeft,
+        y: actualTop
+    };
+}
+
+// 实现一个简单的Query，只要求返回第一个符合要求的元素
+function query(current, selector) {
+    var result = null;
+    switch (selector.charAt(0)) {
+        case "#": // ID选择器
+            result = document.getElementById(selector.substring(1));
+            break;
+        case ".": // 类选择器
+            result = current.getElementsByClassName(selector.substring(1))[0];
+            break;
+        case "[": // 属性选择器
+            var all = current.getElementsByTagName("*");
+            var attr, attrValue, j;
+            var posEqual = selector.indexOf("=");
+            if (posEqual == -1) {
+                attr = selector.substring(1, selector.length - 1);
+                for (j = 0; j < all.length; j++) {
+                    if (all[j].hasAttribute(attr)) {
+                        result = all[j];
+                        break;
+                    }
+                }
+            } else {
+                attr = selector.substring(1, posEqual);
+                attrValue = selector.substring(posEqual + 1, selector.length - 1);
+                for (j = 0; j < all.length; j++) {
+                    if (all[j].getAttribute(attr) === attrValue) {
+                        result = all[j];
+                        break;
+                    }
+                }
+            }
+            break;
+        default: // 标签选择器
+            result = current.getElementsByTagName(selector)[0];
+            break;
+    }
+    return result;
+}
+// mini $，只要求返回第一个符合要求的元素
+function $(selector) {
+    var arrSelector = selector.split(" ");
+    var current = document;
+    for (var i = 0; i < arrSelector.length; i++) {
+        current = query(current, arrSelector[i]);
+    }
+    return current;
+}
+
