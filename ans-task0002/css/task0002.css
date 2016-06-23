@@ -34,3 +34,11 @@ input[type=button] {
 .colorBlue {
     color: #00f;
 }
+
+.blocks ul {
+    margin-left: 2em;
+    border: 2px dotted #ccc;
+    font: 14px/1.5 "Microsoft YaHei", sans-serif;
+    text-indent: 2em;
+    list-style: none;
+}

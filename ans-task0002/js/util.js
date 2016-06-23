@@ -221,3 +221,77 @@ function $(selector) {
     return current;
 }
 
+/**
+ * 4.事件
+ */
+// 给一个element绑定一个针对event事件的响应，响应函数为listener
+function addEvent(element, event, listener) {
+    if (element.addEventListener) {
+        element.addEventListener(event, listener);
+    } else if (element.attachEvent) {
+        element.attachEvent("on" + event, listener);
+    } else {
+        element["on" + event] = listener;
+    }
+}
+
+// 移除element对象对于event事件发生时执行listener的响应
+function removeEvent(element, event, listener) {
+    if (element.removeEventListener) {
+        element.removeEventListener(event, listener);
+    } else if (element.detachEvent) {
+        element.detachEvent("on" + event, listener);
+    } else {
+        element["on" + event] = null;
+    }
+}
+
+// 实现对click事件的绑定
+function addClickEvent(element, listener) {
+    addEvent(element, "click", listener);
+}
+
+// 实现对于按Enter键时的事件绑定
+function addEnterEvent(element, listener) {
+    // 注意onkeydown事件只对一些元素起作用，如document、input（获得焦点的元素）
+    addEvent(element, "keydown", function(event) {
+        if (event.keyCode === 13) {
+            listener();
+        }
+    });
+}
+
+// 接下来我们把上面几个函数和$做一下结合，把他们变成$对象的一些方法
+// - addEvent(element, event, listener) -> $.on(element, event, listener);
+// - removeEvent(element, event, listener) -> $.un(element, event, listener);
+// - addClickEvent(element, listener) -> $.click(element, listener);
+// - addEnterEvent(element, listener) -> $.enter(element, listener);
+$.on = addEvent;
+$.un = removeEvent;
+$.click = addClickEvent;
+$.enter = addEnterEvent;
+
+// 事件代理
+function delegateEvent(element, tag, eventName, listener) {
+    addEvent(element, eventName, function(event) {
+        var target = event.target || event.srcElement;  // 兼容IE6-8
+        if (target.tagName.toLowerCase() === tag) {
+            listener();
+        }
+    });
+}
+$.delegate = delegateEvent;
+
+// 封装改变，去除$
+// $.on = function(selector, event, listener) {
+//     addEvent($(selector), event, listener);
+// };
+// $.click = function(selector, listener) {
+//     addClickEvent($(selector), listener);
+// };
+// $.un = function(selector, event, listener) {
+//     removeEvent($(selector), event, listener);
+// };
+// $.delegate = function(selector, tag, event, listener) {
+//     delegateEvent($(selector), tag, event,listener);
+// };

@@ -31,6 +31,23 @@
         <p id="getPos">getPosition() --- 获取元素相对浏览器窗口的位置</p>
         <p >$() --- 简单的query，返回满足条件的第一个元素</p>
     </div>
+    <h1>4.事件</h1>
+    <div class="blocks">
+        <p id="addEvent">addEvent() --- 为元素绑定事件及其响应</p>
+        <p>removeEvent() --- 删除元素绑定的事件及其响应</p>
+        <p id="addClickEvent">addClickEvent() --- 为元素绑定click事件</p>
+        <p id="addEnterEvent">addEnterEvent() --- 为元素绑定按Enter键事件</p>
+        <p id="$on">$.on() --- 同addEvent()</p>
+        <p>$.un() --- 同removeEvent()</p>
+        <p id="$click">$.click() --- 同addClickEvent()</p>
+        <p id="$enter">$.enter() --- 同addEnterEvent()</p>
+        <p>$.delegate() --- 事件代理</p>
+        <ul id="list">
+            <li>Simon</li>
+            <li>Kenner</li>
+            <li>Erik</li>
+        </ul>
+    </div>
     <h1>小练习</h1>
     <div class="blocks">link</div>
 
@@ -173,6 +190,40 @@
     console.log($("[value=removeClass]"));
     console.log(".blocks p");
     console.log($(".blocks p"));
+    </script>
+
+    <script type="text/javascript">
+    /**
+     * 4.事件
+     */
+    function funBold() {
+        this.style.fontWeight = "bold";
+    }
+    function enter() {
+        $("#addEnterEvent").style.fontWeight = "bold";
+    }
+    addEvent($("#addEvent"), "mouseover", funBold);
+    // removeEvent($("#addEvent"), "mouseover", funBold);
+    addClickEvent($("#addClickEvent"), funBold);
+    addEnterEvent(document, enter);
+
+    function $enter() {
+        $("#$enter").style.fontWeight = "bold";
+    }
+    $.on($("#$on"), "mouseover", funBold);
+    // $.un($("#$on"), "mouseover", funBold);
+    $.click($("#$click"), funBold);
+    $.enter(document, $enter);
+    
+    function log() {
+        console.log("delegation");
+    }
+    $.delegate($("#list"), "li", "click", log);
+
+    // $.on("#$on", "mouseover", funBold);
+    // // $.un("#$on", "mouseover", funBold);
+    // $.click("#$click", funBold);
+    // $.delegate("#list", "li", "click", log);
     </script>
 </body>
 </html>
