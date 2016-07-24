@@ -339,3 +339,46 @@ function getCookie(cookieName) {
     return value;
 }
 
+/**
+ * 6.Ajax
+ */
+// 封装一个Ajax方法 【待测试】
+function ajax(url, options) {
+    var request;    // 创建XHR对象
+    if (window.XMLHttpRequest) {
+        request = new XMLHttpRequest();     //IE7+,Firefox,Chrome,Opera,Safari...
+    } else {
+        request = new ActiveXObject("Microsoft.XMLHTTP");   //IE6,IE5
+    }
+    if (options.type && options.type.toUpperCase() === "POST") {    // 发送请求
+        request.open("POST", url);
+        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.send(options.data);
+    } else {
+        var param = "";
+        if (options.data) {
+            var data = options.data;
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    param += key + "=" + data[key] + "&";
+                }
+            }
+        }
+        request.open("GET", url + "?" + param);
+        request.send();
+    }
+    request.onreadystatechange = function() {   // 取得响应
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                if (options.onsuccess) {
+                    options.onsuccess(request.responseText, request);
+                }
+            } else {
+                if (options.onfail) {
+                    options.onfail(request);
+                }
+            }
+        }
+    };
+}
+
