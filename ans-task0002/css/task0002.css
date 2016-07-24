@@ -9,6 +9,12 @@ body {
     padding: 15px;
 }
 
+.info {
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    text-align: center;
+}
+
 .blocks {
     border: 5px solid #ccc;
     border-radius: 10px;

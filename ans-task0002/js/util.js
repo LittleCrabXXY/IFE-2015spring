@@ -295,3 +295,47 @@ $.delegate = delegateEvent;
 // $.delegate = function(selector, tag, event, listener) {
 //     delegateEvent($(selector), tag, event,listener);
 // };
+
+/**
+ * 5.BOM
+ */
+// 判断是否为IE浏览器，返回-1或者版本号
+function isIE() {
+    var uAg = navigator.userAgent;
+    var result = -1;
+    var start, end;
+    if (uAg.indexOf("MSIE") > -1) {
+        start = uAg.indexOf("MSIE");
+        end = uAg.indexOf(";", start);
+        result = "正在使用IE " + uAg.substring(start + 5, end);
+    } else if (uAg.indexOf("Trident/7.0") > -1) {
+        start = uAg.indexOf("rv:");
+        end = uAg.indexOf(")", start);
+        result = "正在使用IE " + uAg.substring(start + 3, end);
+    }
+    return result;
+}
+
+// 设置cookie
+function setCookie(cookieName, cookieValue, expiredays) {
+    if (expiredays) {
+        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expiredays.toUTCString();
+    } else {
+        document.cookie = cookieName + "=" + cookieValue;
+    }
+}
+
+// 获取cookie值
+function getCookie(cookieName) {
+    var cookies = document.cookie;
+    var arrCookies = cookies.split(";");
+    var value;
+    for (var i = 0; i < arrCookies.length; i++) {
+        if (arrCookies[i].split("=")[0] === cookieName) {
+            value = arrCookies[i].split("=")[1];
+            break;
+        }
+    }
+    return value;
+}
+

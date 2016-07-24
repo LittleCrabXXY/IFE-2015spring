@@ -7,9 +7,9 @@
     <link rel="stylesheet" type="text/css" href="css/task0002.css">
 </head>
 <body>
+    <h3 class="info">实现的函数及其功能如下，部分测试结果见控制台</h3>
     <h1>2.JavaScript数据类型及语言基础</h1>
     <div class="blocks">
-        <h3>实现的函数及其功能如下，测试结果见控制台</h3>
         <p>isArray() --- 判断是否为数组</p>
         <p>isFunction() --- 判断是否为函数</p>
         <p>cloneObject() --- 深度克隆（对目标对象的完整拷贝，递归实现）</p>
@@ -47,6 +47,12 @@
             <li>Kenner</li>
             <li>Erik</li>
         </ul>
+    </div>
+    <h1>5.BOM</h1>
+    <div class="blocks">
+        <p>isIE() --- 判断是否为IE浏览器</p>
+        <p>setCookie() --- 设置cookie</p>
+        <p>getCookie() --- 获取cookie值</p>
     </div>
     <h1>小练习</h1>
     <div class="blocks">link</div>
@@ -216,6 +222,7 @@
     $.enter(document, $enter);
     
     function log() {
+        console.log("\n--- TEST $.delegate() ---");
         console.log("delegation");
     }
     $.delegate($("#list"), "li", "click", log);
@@ -224,6 +231,23 @@
     // // $.un("#$on", "mouseover", funBold);
     // $.click("#$click", funBold);
     // $.delegate("#list", "li", "click", log);
+    </script>
+
+    <script type="text/javascript">
+    /**
+     * 5.BOM
+     */
+    console.log("\n--- TEST isIE() ---");
+    console.log(isIE());
+
+    console.log("\n--- TEST setCookie() ---");
+    setCookie("name", "pg");
+    // setCookie("age", "100", new Date("Jul 24 2016 13:50:00 GMT+0800"));
+    console.log("document.cookie = '" + document.cookie + "'");
+    
+    console.log("\n--- TEST getCookie() ---");
+    console.log("name = " + getCookie("name"));
+    console.log("age = " + getCookie("age"));
     </script>
 </body>
 </html>
