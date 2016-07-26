@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>小练习</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link rel="stylesheet" type="text/css" href="css/training.css">
+</head>
+<body>
+    <ul class="nav" id="nav">
+        <li id="0">输入文字处理</li>
+        <li id="1">倒计时</li>
+        <li id="2">轮播图</li>
+        <li id="3">输入提示框</li>
+        <li id="4">页面拖拽交互</li>
+    </ul>
+    <div class="content">
+        <p class="step">第一阶段：半角逗号分隔，去空去重</p>
+        <input id="input1" type="text">
+        <input id="btn1" type="button" value="确定">
+        <p id="hob1" class="hob">&nbsp;</p>
+        <p class="step">第二阶段：换行、空格（全角/半角）、逗号（全角/半角）、顿号、分号分隔，去空去重</p>
+        <textarea class="textarea" id="input2"></textarea>
+        <input class="btn" id="btn2" type="button" value="确定">
+        <p id="hob2" class="hob">&nbsp;</p>
+        <p class="step">第三阶段：换行、空格（全角/半角）、逗号（全角/半角）、顿号、分号分隔，去空去重，0&lt;爱好数量&lt;=10，提示</p>
+        <textarea class="textarea" id="input3"></textarea>
+        <input class="btn" id="btn3" type="button" value="确定">
+        <p id="err" class="err">&nbsp;</p>
+        <div id="hob3" class="hob"></div>
+    </div>
+    <div class="content">倒计时</div>
+    <div class="content">轮播图</div>
+    <div class="content">输入提示框</div>
+    <div class="content">页面拖拽交互</div>
+    <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/training.js"></script>
+</body>
+</html>

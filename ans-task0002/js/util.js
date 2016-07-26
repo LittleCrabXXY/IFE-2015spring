@@ -276,7 +276,7 @@ function delegateEvent(element, tag, eventName, listener) {
     addEvent(element, eventName, function(event) {
         var target = event.target || event.srcElement;  // 兼容IE6-8
         if (target.tagName.toLowerCase() === tag) {
-            listener();
+            listener(target);
         }
     });
 }
