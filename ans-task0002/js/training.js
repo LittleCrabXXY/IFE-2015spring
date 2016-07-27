@@ -121,4 +121,44 @@ window.onload = function() {
             $('#hob3').appendChild(label);
         }
     });
+    var interval;
+    addClickEvent($('#btn-cd'), function() {
+        var inputDate = $('#input-date').value;
+        var reg = /(\d{4})-((0[1-9])|(1[0-2]))-((0[1-9]|([12][0-9])|(3[01])))/;
+        if (!reg.test(inputDate)) {
+            return;
+        }
+        var arrDate = inputDate.split('-');
+        var target = new Date(parseInt(arrDate[0]), parseInt(arrDate[1]) - 1, parseInt(arrDate[2]));
+        $('#year').innerHTML = target.getFullYear() + "";
+        $('#month').innerHTML = target.getMonth() + 1 + "";
+        $('#date').innerHTML = target.getDate() + "";
+        countDown(target);
+        $('#cd-info1').style.display = 'block';
+        $('#cd-info2').style.display = 'block';
+        clearInterval(interval);
+        interval = setInterval(function() {
+            countDown(target);
+        }, 1000);
+    });
+    function countDown(target) {
+        var now = new Date();
+        if (target > now) {
+            var seconds = Math.floor((target - now) / 1000);
+            var s = seconds % 60;
+            var m = Math.floor(seconds / 60) % 60;
+            var h = Math.floor(seconds / 3600) % 24;
+            var d = Math.floor(seconds / (3600*24));
+            $('#day').innerHTML = d + "";
+            $('#hour').innerHTML = h + "";
+            $('#minute').innerHTML = m + "";
+            $('#second').innerHTML = s + "";
+        } else {
+            clearInterval(interval);
+            $('#day').innerHTML = "0";
+            $('#hour').innerHTML = "0";
+            $('#minute').innerHTML = "0";
+            $('#second').innerHTML = "0";
+        }
+    }
 };

@@ -45,7 +45,7 @@
     display: none;
 }
 
-.step {
+.step, .tip {
     font: 700 14px/2 "SimSun", serif;
 }
 
@@ -66,4 +66,19 @@
 .err {
     font: 700 14px/2 "SimSun", serif;
     color: #f00;
+}
+
+.countdown {
+    text-align: center;
+}
+
+.cd-info {
+    display: none;
+    margin-top: 50px;
+    font: 40px/2 "SimSun", serif;
+}
+
+.cd-info > span {
+    font: 700 40px/2 "Microsoft YaHei", sans-serif;
+    color: #00f;
 }
