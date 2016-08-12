@@ -9,6 +9,7 @@ window.onload = function() {
         target.style.backgroundColor = '#ddd';
         div[target.id].style.display = 'block';
     });
+    // 输入文字处理
     addClickEvent($('#btn1'), function() {
         var hob = $('#input1').value;
         var tmpHob = '', arrHob = [];
@@ -121,7 +122,8 @@ window.onload = function() {
             $('#hob3').appendChild(label);
         }
     });
-    var interval;
+    // 倒计时
+    var intervalCTD;
     addClickEvent($('#btn-cd'), function() {
         var inputDate = $('#input-date').value;
         var reg = /(\d{4})-((0[1-9])|(1[0-2]))-((0[1-9]|([12][0-9])|(3[01])))/;
@@ -136,8 +138,8 @@ window.onload = function() {
         countDown(target);
         $('#cd-info1').style.display = 'block';
         $('#cd-info2').style.display = 'block';
-        clearInterval(interval);
-        interval = setInterval(function() {
+        clearInterval(intervalCTD);
+        intervalCTD = setInterval(function() {
             countDown(target);
         }, 1000);
     });
@@ -154,11 +156,97 @@ window.onload = function() {
             $('#minute').innerHTML = m + "";
             $('#second').innerHTML = s + "";
         } else {
-            clearInterval(interval);
+            clearInterval(intervalCTD);
             $('#day').innerHTML = "0";
             $('#hour').innerHTML = "0";
             $('#minute').innerHTML = "0";
             $('#second').innerHTML = "0";
         }
+    }
+    // 轮播图
+    var conf = {    // 配置项
+        asc: true,      // 正序
+        loop: true,     // 循环
+        second: 5   // 秒
+    };
+    var intervalFigure, flagAni = true;     // flagAni避免冲突
+    addClickEvent($('#2'), function() {
+        clearInterval(intervalFigure);
+        var span = $('#buttons').getElementsByTagName('span');
+        for (var i = 0; i < span.length; i++) {
+            span[i].style.backgroundColor = '#999';
+        }
+        if (conf.asc) {
+            $('#list').style.marginLeft = -756 + 'px';
+            $('#buttons').firstElementChild.style.backgroundColor = '#ff6a00';
+        } else {
+            $('#list').style.marginLeft = -2268 + 'px';
+            $('#buttons').lastElementChild.style.backgroundColor = '#ff6a00';
+        }
+        var originLeft, left;
+        intervalFigure = setInterval(function() {
+            if (flagAni) {
+                originLeft = parseInt($('#list').style.marginLeft);
+                if (conf.asc) {
+                    left = originLeft - 756;
+                } else {
+                    left = originLeft + 756;
+                }
+                if (left === -756 || left === -1512 || left === -2268) {
+                    animation(originLeft, left);
+                } else {
+                    if (conf.loop) {
+                        animation(originLeft, left);
+                    } else {
+                        conf.asc = !conf.asc;
+                    }
+                }
+            }
+        }, conf.second * 1000);
+    });
+    $.delegate($('#buttons'), 'span', 'click', function(target) {
+        if (flagAni) {
+            var currentLeft = parseInt($('#list').style.marginLeft);
+            switch (target.id) {
+                case 'span1':
+                    animation(currentLeft, -756);
+                    break;
+                case 'span2':
+                    animation(currentLeft, -1512);
+                    break;
+                case 'span3':
+                    animation(currentLeft, -2268);
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+    var intervalAnimation, timeAni = 21;
+    function animation(from, to) {
+        flagAni = false;
+        clearInterval(intervalAnimation);
+        var dis = (to - from) / timeAni;
+        var span = $('#buttons').getElementsByTagName('span');
+        intervalAnimation = setInterval(function() {
+            from += dis;
+            $('#list').style.marginLeft = from + 'px';
+            if (from === to) {
+                clearInterval(intervalAnimation);
+                for (var i = 0; i < span.length; i++) {
+                    span[i].style.backgroundColor = '#999';
+                }
+                if (to === -3024) {
+                    $('#list').style.marginLeft = -756 + 'px';
+                    span[0].style.backgroundColor = '#ff6a00';
+                } else if (to === 0) {
+                    $('#list').style.marginLeft = -2268 + 'px';
+                    span[2].style.backgroundColor = '#ff6a00';
+                } else {
+                    span[to / -756 - 1].style.backgroundColor = '#ff6a00';
+                }
+                flagAni = true;
+            }
+        }, 8);
     }
 };
