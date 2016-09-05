@@ -274,4 +274,78 @@ window.onload = function() {
             searchTip.style.display = 'none';
         }
     });
+    // 页面拖拽交互
+    $.delegate($('#wrap'), 'li', 'mousedown', function(target, event){
+        addClass(target, 'opacity');
+        var initMousePos = {
+            x: event.clientX,
+            y: event.clientY
+        };
+        var initZIndex = target.style.zIndex;
+        target.style.zIndex = 2;
+        var crossIndex = -1;
+        var parentCN = target.parentElement.className;
+        addEvent(target, 'mousemove', move);
+        addEvent(target, 'mouseup', up);
+        function move(ev) {
+            var mousePos = {
+                x: ev.clientX,
+                y: ev.clientY
+            };
+            target.style.top = mousePos.y - initMousePos.y + 'px';
+            target.style.left = mousePos.x - initMousePos.x + 'px';
+            if (parentCN === 'drag-left') {
+                crossIndex = cross(target, $('#dragRight'));
+            } else if (parentCN === 'drag-right') {
+                crossIndex = cross(target, $('#dragLeft'));
+            }
+        }
+        function up() {
+            removeEvent(target, 'mousemove', move);
+            if (crossIndex !== -1) {
+                addClass(target, 'hide');
+                var crossElement;
+                if (parentCN === 'drag-left') {
+                    crossElement = $('#dragRight').children[crossIndex];
+                } else if (parentCN === 'drag-right') {
+                    crossElement = $('#dragLeft').children[crossIndex];
+                }
+                removeClass(crossElement, 'cross');
+            }
+            removeClass(target, 'opacity');
+            target.style.zIndex = initZIndex;
+            target.style.top = 0;
+            target.style.left = 0;
+            removeEvent(target, 'mouseup', up);
+        }
+    });
+    function cross(item1, item2) {
+        var index = -1;
+        var posItem1 = getPosition(item1);
+        var posItem2 = getPosition(item2);
+        var lis = item2.children;
+        for (var i = 0; i < lis.length; i++) {
+            if (lis[i].className.indexOf('cross') !== -1) {
+                removeClass(lis[i], 'cross');
+                addClass(lis[i], 'hide');
+                break;
+            }
+        }
+        if (posItem1.x + 200 > posItem2.x && posItem1.x < posItem2.x + 200
+            && posItem1.y + 50 > posItem2.y && posItem1.y < posItem2.y + 400) {
+            index = parseInt((posItem1.y - posItem2.y) / 50 + 0.5);
+            if (index < 0) {
+                index = 0;
+            } else if (index > 7) {
+                index = 7;
+            }
+            if (lis[index].className.indexOf('hide') !== -1) {
+                addClass(lis[index], 'cross');
+                removeClass(lis[index], 'hide');
+            } else {
+                index = -1;
+            }
+        }
+        return index;
+    }
 };
