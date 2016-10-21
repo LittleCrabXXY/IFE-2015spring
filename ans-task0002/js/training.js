@@ -250,26 +250,42 @@ window.onload = function() {
         }, 8);
     }
     // 输入提示框
-    var suggestData = ['Simon', 'Erik', 'Kener'];   // 伪造的提示数据
     addEvent($('#searchInput'), 'keyup', function() {
         var text = trim(this.value);    // 去除字符串头尾空白
         var searchTip = $('#searchTip');
         searchTip.innerHTML = '';
         if (text !== "") {
-            // 将数据送后台
-            // 接收后台返回数据：目前伪造为suggestData
-            if (suggestData.length > 0) {
-                var li, liText;
-                for (var i = 0; i < suggestData.length; i++) {
-                    li = document.createElement('li');
-                    liText = document.createTextNode(suggestData[i]);
-                    li.appendChild(liText);
-                    searchTip.appendChild(li);
+            // 将数据送后台，并接收后台返回的数据
+            var url = window.location.origin + '/node/suggestServer.js';
+            var onsuccess = function(str,xhr) {
+                var suggestData = str.split(',');
+                // 显示提示内容
+                if (suggestData.length > 0) {
+                    var li, liText;
+                    for (var i = 0; i < suggestData.length; i++) {
+                        li = document.createElement('li');
+                        liText = document.createTextNode(suggestData[i]);
+                        li.appendChild(liText);
+                        searchTip.appendChild(li);
+                    }
+                    searchTip.style.display = 'block';
+                } else {
+                    searchTip.style.display = 'none';
                 }
-                searchTip.style.display = 'block';
-            } else {
-                searchTip.style.display = 'none';
-            }
+            };
+            var onfail = function(xhr) {
+                console.log('Failed to query suggestData!');
+            };
+            ajax(url, {
+                method: 'POST',
+                data: JSON.stringify({
+                    target: 'suggest',
+                    text: text
+                }),
+                contentType: 'application/json',
+                onsuccess: onsuccess,
+                onfail: onfail
+            });
         } else {
             searchTip.style.display = 'none';
         }

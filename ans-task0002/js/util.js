@@ -342,18 +342,18 @@ function getCookie(cookieName) {
 /**
  * 6.Ajax
  */
-// 封装一个Ajax方法 【待测试】
+// 封装一个Ajax方法
 function ajax(url, options) {
-    var request;    // 创建XHR对象
+    var xhr;    // 创建XHR对象
     if (window.XMLHttpRequest) {
-        request = new XMLHttpRequest();     //IE7+,Firefox,Chrome,Opera,Safari...
+        xhr = new XMLHttpRequest();     //IE7+,Firefox,Chrome,Opera,Safari...
     } else {
-        request = new ActiveXObject("Microsoft.XMLHTTP");   //IE6,IE5
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");   //IE6,IE5
     }
-    if (options.type && options.type.toUpperCase() === "POST") {    // 发送请求
-        request.open("POST", url);
-        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        request.send(options.data);
+    if (options.method && options.method.toUpperCase() === "POST") {    // 发送请求
+        xhr.open("POST", url);
+        xhr.setRequestHeader("Content-Type", options.contentType);
+        xhr.send(options.data);
     } else {
         var param = "";
         if (options.data) {
@@ -364,18 +364,18 @@ function ajax(url, options) {
                 }
             }
         }
-        request.open("GET", url + "?" + param);
-        request.send();
+        xhr.open("GET", url + "?" + param);
+        xhr.send();
     }
-    request.onreadystatechange = function() {   // 取得响应
-        if (request.readyState === 4) {
-            if (request.status === 200) {
+    xhr.onreadystatechange = function() {   // 取得响应
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
                 if (options.onsuccess) {
-                    options.onsuccess(request.responseText, request);
+                    options.onsuccess(xhr.responseText, xhr);
                 }
             } else {
                 if (options.onfail) {
-                    options.onfail(request);
+                    options.onfail(xhr);
                 }
             }
         }
