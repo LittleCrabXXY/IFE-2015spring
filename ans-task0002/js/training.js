@@ -257,8 +257,13 @@ window.onload = function() {
         if (text !== "") {
             // 将数据送后台，并接收后台返回的数据
             var url = window.location.origin + '/node/suggestServer.js';
-            var onsuccess = function(str,xhr) {
-                var suggestData = str.split(',');
+            var onsuccess = function(str, xhr) {
+                var suggestData;
+                if (str === '') {
+                    suggestData = str.split('');    // 注意！
+                } else {
+                    suggestData = str.split(',');
+                }
                 // 显示提示内容
                 if (suggestData.length > 0) {
                     var li, liText;
