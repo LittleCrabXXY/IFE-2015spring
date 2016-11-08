@@ -28,6 +28,7 @@
 .task {
     position: relative;
     float: left;
+    padding-bottom: 41px;
     border: 1px solid #ccc;
     width: 200px;
     min-height: 300px;
@@ -46,6 +47,7 @@
 .inner-content {
     position: relative;
     margin-left: 402px;
+    padding-bottom: 41px;
     border: 1px solid #ccc;
     min-width: 200px;
     min-height: 300px;
@@ -180,7 +182,7 @@
 .task-list > p,
 .task-list li {
     height: 28px;
-    font: 10px/28px "Microsoft YaHei", sans-serif;
+    font: 12px/28px "Microsoft YaHei", sans-serif;
 }
 
 .task-list > p {
@@ -206,16 +208,29 @@
     border-bottom: 1px solid #ccc;
     height: 50px;
     text-indent: 15px;
-    font: 14px/50px "Microsoft YaHei", sans-serif;
+    line-height: 50px;
 }
 
 .task-title {
     background-color: #f2f2f2;
-    font-weight: 700;
 }
 
 .task-date {
     background-color: #fafaee;
+}
+
+.set {
+    border: none;
+    background: transparent;
+    font: 14px "Microsoft YaHei", sans-serif;
+}
+
+.task-title > input {
+    font-weight: 700;
+}
+
+.task-date > label {
+    font: 14px "Microsoft YaHei", sans-serif;
 }
 
 .icon-finish,
@@ -239,4 +254,33 @@
 
 .textarea {
     padding: 15px;
+}
+
+.textarea > textarea {
+    border: none;
+    width: 100%;
+    min-height: 100px;
+    font: 14px "Microsoft YaHei", sans-serif;
+    resize: none;   /*设置文本域大小不可改变*/
+}
+
+.btns {
+    display: inline-block;
+    margin-left: 50%;
+    height: 40px;
+    font: 12px/40px "Microsoft YaHei", sans-serif;
+}
+
+.btns > input {
+    position: relative;
+    left: -50%;
+    border: 2px solid #999;
+    width: 35px;
+    height: 25px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    margin-left: 40px;
 }
