@@ -8,7 +8,7 @@
 
 .header {
     border: 1px solid #ccc;
-    min-width: 600px;
+    min-width: 700px;
     height: 60px;
     background-color: #ddd;
 }
@@ -20,8 +20,9 @@
 }
 
 .main {
-    overflow: auto;
+    overflow: hidden;   /* auto会使得div有时带滚动条 */
     margin-top: -1px;
+    min-width: 700px;
 }
 
 .category,
@@ -49,7 +50,7 @@
     margin-left: 402px;
     padding-bottom: 41px;
     border: 1px solid #ccc;
-    min-width: 200px;
+    min-width: 300px;
     min-height: 300px;
 }
 
