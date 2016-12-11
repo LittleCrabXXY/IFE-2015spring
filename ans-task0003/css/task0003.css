@@ -262,7 +262,7 @@
     width: 100%;
     min-height: 100px;
     font: 14px "Microsoft YaHei", sans-serif;
-    resize: none;   /*设置文本域大小不可改变*/
+    resize: none;   /* 设置文本域大小不可改变 */
 }
 
 .btns {
