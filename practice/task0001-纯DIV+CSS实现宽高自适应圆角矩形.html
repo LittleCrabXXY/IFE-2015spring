@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>纯DIV+CSS实现宽高自适应圆角矩形</title>
+<style type="text/css">
+    /*compressed css*/
+    * {margin: 0; padding: 0;}
+    .wrap {margin: 10px;}
+    .r1,.r2,.r3,.r4 {height: 1px;}
+    .r3,.r4,.r5,.mid {border-left: 1px solid #000; border-right: 1px solid #000;}
+    .r1 {margin: 0 6px; background-color: #000;}
+    .r2 {margin: 0 4px; border-left: 2px solid #000; border-right: 2px solid #000;}
+    .r3 {margin: 0 3px;}
+    .r4 {margin: 0 2px;}
+    .r5 {height: 2px; margin: 0 1px;}
+    .mid {padding: 0 10px;}
+    .mid p {line-height: 30px;}
+    
+    /*uncompressed css*/
+/*  * {
+        margin: 0;
+        padding: 0;
+    }
+    .wrap {
+        margin: 10px;
+    }
+    .r1 {
+        height: 1px;
+        margin: 0 6px;
+        background-color: #000;
+    }
+    .r2 {
+        height: 1px;
+        margin: 0 4px;
+        border-left: 2px solid #000;
+        border-right: 2px solid #000;
+    }
+    .r3 {
+        height: 1px;
+        margin: 0 3px;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+    }
+    .r4 {
+        height: 1px;
+        margin: 0 2px;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+    }
+    .r5 {
+        height: 2px;
+        margin: 0 1px;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+    }
+    .mid {
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+        padding: 0 10px;
+    }
+    .mid p {
+        line-height: 30px;
+    }*/
+</style>
+</head>
+
+<body>
+<div class="wrap">
+    <div class="r1"></div>
+    <div class="r2"></div>
+    <div class="r3"></div>
+    <div class="r4"></div>
+    <div class="r5"></div>
+    <div class="mid">
+        <p>content</p>
+<!--        <p>纯DIV+CSS实现宽高自适应圆角矩形</p>
+        <p>纯DIV+CSS实现宽高自适应圆角矩形</p>
+        <p>纯DIV+CSS实现宽高自适应圆角矩形</p>
+        <p>纯DIV+CSS实现宽高自适应圆角矩形</p>
+        <p>纯DIV+CSS实现宽高自适应圆角矩形</p> -->
+    </div>
+    <div class="r5"></div>
+    <div class="r4"></div>
+    <div class="r3"></div>
+    <div class="r2"></div>
+    <div class="r1"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>双飞翼布局+圣杯布局</title>
+<style type="text/css">
+* {
+    margin: 0;
+    padding: 0;
+}
+#hd, #ft {
+    font-weight: bold;
+    clear: both;
+}
+#bd {
+    /*padding: 0 230px 0 190px;*/
+}
+.main {
+    float: left;
+    width: 100%;
+    background-color: #f00;
+}
+.main-wrap {
+    margin: 0 230px 0 190px;    /* 双飞翼布局的解决方案 */
+}
+.sub {
+    float: left;
+    width: 190px;
+    margin-left: -100%;
+/*    position: relative;
+    left: -190px;*/
+    background-color: #0f0;
+}
+.extra {
+    float: left;
+    width: 230px;
+    margin-left: -230px;
+/*    position: relative;
+    right: -230px;*/
+    background-color: #00f;
+}
+</style>
+</head>
+<body>
+<div id="page">
+    <div id="hd">This id head.</div>
+    <div id="bd">
+        <div class="main">
+            <div class="main-wrap">main</div><!-- 包裹层 -->
+        </div>
+        <div class="sub">sub</div>
+        <div class="extra">extra</div>
+    </div>
+    <div id="ft">This is foot.</div>
+</div>
+</body>
+</html>
