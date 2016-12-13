@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <link rel="stylesheet" type="text/css" href="css/task0003.css">
     <script type="text/javascript" src="js/task0003.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
 </head>
 <body>
     <div class="header" id="header">
@@ -13,35 +14,26 @@
     </div>
     <div class="main">
         <div class="category" id="category">
-            <p>所有任务&nbsp;<span>(0)</span></p>
+            <p>所有任务&nbsp;(<span>0</span>)</p>
             <p>分类列表&nbsp;</p>
-            <ul class="cate-list">
-                <li>
-                    <span class="icon-floder"></span>
-                    <span class="font14">新分类&nbsp;<span>(0)</span></span>
+            <ul class="cate-list" id="cate-list">
+                <li class="icon-floder">
+                    新分类&nbsp;(<span>0</span>)
                     <span class="icon-delete"></span>
-                    <ul class="inner-cate-list">
-                        <li class="current-cate">
-                            <span class="icon-paper"></span>
-                            <span class="font14">task1&nbsp;<span>(0)</span></span>
-                            <span class="icon-delete"></span>
-                        </li>
-                        <li>
-                            <span class="icon-paper"></span>
-                            <span class="font14">task2&nbsp;<span>(0)</span></span>
-                            <span class="icon-delete"></span>
-                        </li>
-                    </ul>
                 </li>
-                <li>
-                    <span class="icon-floder"></span>
-                    <span class="font14">默认分类&nbsp;<span>(0)</span></span>
+                <li class="icon-paper sub-cate current-cate">
+                    task1&nbsp;(<span>0</span>)
+                    <span class="icon-delete"></span>
+                </li>
+                <li class="icon-paper sub-cate">
+                    task2&nbsp;(<span>0</span>)
+                    <span class="icon-delete"></span>
+                </li>
+                <li class="icon-floder">
+                    默认分类&nbsp;(<span>0</span>)
                 </li>
             </ul>
-            <div class="add">
-                <span class="icon-add"></span>
-                <span class="font12">新增分类</span>
-            </div>
+            <div class="add font12 icon-add" id="add-cate">新增分类</div>
         </div>
         <div class="task" id="task">
             <div class="filter">
@@ -62,24 +54,21 @@
                     <li class="current-task">todo5</li>
                 </ul>
             </div>
-            <div class="add">
-                <span class="icon-add"></span>
-                <span class="font12">新增任务</span>
-            </div>
+            <div class="add font12 icon-add">新增任务</div>
         </div>
         <div class="content">
             <div class="inner-content" id="inner-content">
-                <div class="task-title">
+                <div class="task-title" id="task-title">
                     <input class="set" type="text" name="" value="todox">
                     <span class="icon-finish"></span>
                     <span class="icon-edit"></span>
                 </div>
-                <div class="task-date">
+                <div class="task-date" id="task-date">
                     <label for="set-date">任务日期：</label>
                     <input class="set" type="text" name="" id="set-date" value="2016-11-07">
                 </div>
                 <div class="textarea">
-                    <textarea>todox的内容</textarea>
+                    <textarea  id="textarea">todox的内容</textarea>
                 </div>
                 <div class="add">
                     <span class="btns">

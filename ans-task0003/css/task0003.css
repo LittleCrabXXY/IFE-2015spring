@@ -70,9 +70,11 @@
     margin-top: 16px;
 }
 
-.cate-list,
-.add {
-    font-size: 0;
+.cate-list > li {
+    position: relative;
+    height: 28px;
+    text-indent: 30px;
+    font: 14px/28px "Microsoft YaHei", sans-serif;
 }
 
 .add {
@@ -86,54 +88,40 @@
 }
 
 .icon-floder {
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    background: url(../img/floder.png) no-repeat;
-    background-position: 6px 6px;
+    background-image: url(../img/floder.png);
+    background-repeat: no-repeat;
+    background-position: 10px 6px;
 }
 
 .icon-paper {
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    background: url(../img/paper.png) no-repeat;
-    background-position: 6px 6px;
+    background-image: url(../img/paper.png);
+    background-repeat: no-repeat;
+    background-position: 30px 6px;
 }
 
 .icon-delete {
     position: absolute;
     right: 10px;
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    background: url(../img/delete.png) no-repeat;
-    background-position: 6px 6px;
+    top: 6px;
+    display: none;
+    width: 16px;
+    height: 16px;
+    background-image: url(../img/delete.png);
+    background-repeat: no-repeat;
 }
 
 .icon-add {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    background: url(../img/add.png) no-repeat;
+    background-image: url(../img/add.png);
+    background-repeat: no-repeat;
     background-position: 12px 12px;
 }
 
-.font14 {
-    display: inline-block;
-    vertical-align: top;
-    text-indent: 0;
-    font: 14px/28px "Microsoft YaHei", sans-serif;
-}
-
 .font12 {
-    display: inline-block;
-    vertical-align: top;
-    text-indent: 0;
     font: 12px/40px "Microsoft YaHei", sans-serif;
+    text-indent: 40px;
 }
 
-.inner-cate-list > li {
+.sub-cate {
     padding-left: 20px;
 }
 
@@ -255,14 +243,17 @@
 
 .textarea {
     padding: 15px;
+    font-size: 0;
 }
 
 .textarea > textarea {
+    overflow: auto;
     border: none;
     width: 100%;
     min-height: 100px;
     font: 14px "Microsoft YaHei", sans-serif;
-    resize: none;   /* 设置文本域大小不可改变 */
+    resize: none;    /* 设置文本域大小不可改变 */
+    outline: none;
 }
 
 .btns {
