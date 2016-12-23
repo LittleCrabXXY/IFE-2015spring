@@ -27,6 +27,7 @@
 
 .category,
 .task {
+    overflow: hidden;
     position: relative;
     float: left;
     padding-bottom: 41px;
@@ -59,7 +60,8 @@
     text-indent: 10px;
 }
 
-.category > p {
+.all-task,
+.info-cate-list {
     height: 44px;
     background-color: #f2f2f2;
     font: 14px/44px "Microsoft YaHei", sans-serif;
@@ -75,6 +77,10 @@
     height: 28px;
     text-indent: 30px;
     font: 14px/28px "Microsoft YaHei", sans-serif;
+}
+
+.cate-list > .default {
+    font-weight: 700;
 }
 
 .add {
@@ -103,7 +109,7 @@
     position: absolute;
     right: 10px;
     top: 6px;
-    display: none;
+    visibility: hidden;
     width: 16px;
     height: 16px;
     background-image: url(../img/delete.png);
@@ -121,15 +127,11 @@
     text-indent: 40px;
 }
 
-.sub-cate {
-    padding-left: 20px;
-}
-
 .current-cate {
     background-color: #fff;
 }
 
-.category > p,
+.category > p:first-child,
 .cate-list,
 .add {
     cursor: pointer;
@@ -182,6 +184,7 @@
 .task-list li {
     text-indent: 35px;
     background-color: #fff;
+    cursor: pointer;
 }
 
 .done {
@@ -212,6 +215,7 @@
     border: none;
     background: transparent;
     font: 14px "Microsoft YaHei", sans-serif;
+    outline: none;
 }
 
 .task-title > input {
@@ -229,6 +233,7 @@
     display: inline-block;
     width: 32px;
     height: 32px;
+    cursor: pointer;
 }
 
 .icon-finish {
@@ -275,4 +280,48 @@
 
 .btn-cancel {
     margin-left: 40px;
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+}
+
+.mask-input {
+    position: absolute;
+    bottom: 10px;
+    left: 40px;
+    width: 120px;
+    height: 16px;
+}
+
+.confirm {
+    position: fixed;
+    border: 5px solid #999;
+    width: 200px;
+    height: 70px;
+    background-color: #fff;
+    font: 700 18px/30px 'Microsoft YaHei', sans-serif;
+    text-align: center;
+}
+
+.confirm-ok,
+.confirm-cancel {
+    display: inline-block;
+    border: 2px solid #999;
+    width: 40px;
+    height: 25px;
+    background-color: #fff;
+    font: 14px 'Microsoft YaHei', sans-serif;
+    cursor: pointer;
+}
+
+.confirm-cancel {
+    margin-left: 20px;
 }

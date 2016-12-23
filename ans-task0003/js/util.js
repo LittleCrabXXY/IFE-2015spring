@@ -25,3 +25,20 @@ function hasClass(element, queryClass) {
     }
     return result;
 }
+
+function addClass(element, cName) {
+    var classStr = element.className;
+    if (!hasClass(element, cName)) {
+        if (classStr === "") {
+            element.className = cName;
+        } else {
+            element.className = classStr + ' ' + cName;
+        }
+    }
+}
+
+function removeClass(element, cName) {
+    var classStr = element.className;
+    var reg = new RegExp(' ' + cName + '|' + cName + ' |' + cName);
+    element.className = classStr.replace(reg, '');
+}
