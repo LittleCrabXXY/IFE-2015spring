@@ -7,6 +7,8 @@ window.onload = function() {
     window.onresize = function() {
         adaptiveHeight(minH);
     };
+    // init localStorage
+    initLocalStorage();
     // cate-list: change category
     var allTask = document.getElementById('all-task');
     addEvent(allTask, 'click', getTask);
@@ -21,10 +23,68 @@ window.onload = function() {
     delegateEvent(cateList, 'span', 'mouseover', iconDelete);
     delegateEvent(cateList, 'span', 'mouseout', iconDelete);
     delegateEvent(cateList, 'span', 'click', function(event) {
-        var tgtDelCate = event.target || event.srcElement;
+        var tgtDelCate = (event.target || event.srcElement).parentElement;
         overlay('delCate', tgtDelCate);
     });
 };
+
+function initLocalStorage() {
+    var cateList = document.getElementById('cate-list');
+    // todo: (0)
+    cateList.innerHTML = '<li class="default icon-floder current-cate" id="default">默认分类&nbsp;(0)</li>';
+    if (localStorage.length === 0) {
+        localStorage.setItem('***分类', '默认分类');
+        localStorage.setItem('***名单', '***名单,***分类,默认分类');
+    } else {
+        var topCate = localStorage.getItem('***分类');
+        topCate = topCate.split(',');
+        for (var i=1; i<topCate.length; i++) {
+            getCate(null, topCate[i], true);
+        }
+    }
+}
+
+function getCate(currentCate, cateName, isInit) {
+    var newCate = document.createElement('li');
+    newCate.innerHTML = cateName + '&nbsp;(0)<span class="icon-delete"></span>';
+    if (!currentCate) {
+        newCate.className = isInit ? 'icon-floder' : 'icon-floder current-cate';
+        currentCate = document.getElementById('default');
+        removeClass(document.getElementById('all-task'), 'current-cate');
+        currentCate.parentElement.insertBefore(newCate, currentCate);
+    } else {
+        newCate.className = isInit ? 'icon-paper' : 'icon-paper current-cate';
+        newCate.style.paddingLeft = parseInt(currentCate.style.paddingLeft || 0) + 20 + 'px';
+        newCate.style.backgroundPosition = parseInt(currentCate.style.backgroundPosition || '10px 6px') + 20 + 'px 6px';
+        removeClass(currentCate, 'current-cate');
+        currentCate.parentElement.insertBefore(newCate, currentCate.nextSibling);
+    }
+    var subCate = localStorage.getItem(cateName);
+    if (subCate) {
+        subCate = subCate.split(',');
+        for (var i=0; i<subCate.length; i++) {
+            getCate(newCate, subCate[i], isInit);
+        }
+    }
+}
+
+function setCate(currentCate, cateName) {
+    var oldValue;
+    if (!currentCate) {
+        oldValue = localStorage.getItem('***分类');
+        localStorage.setItem('***分类', oldValue + ',' + cateName);
+    } else {
+        var cateStr = currentCate.innerHTML;
+        var currCateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+        oldValue = localStorage.getItem(currCateName);
+        if (oldValue) {
+            localStorage.setItem(currCateName, oldValue + ',' + cateName);
+        } else {
+            localStorage.setItem(currCateName, cateName);
+        }
+    }
+    addName(cateName);
+}
 
 function getTask(event) {
     var allTask = document.getElementById('all-task');
@@ -75,41 +135,59 @@ function preAddCate() {
     // default, cate(top-cate, sub-cate)
     if (currentCate && hasClass(currentCate, 'default')) {
         alert('不能为默认分类添加子分类');
-    } else {
-        overlay('addCate');
-        var input = document.getElementById('mask-input');
-        addEvent(input, 'keyup', function(event) {
-            if (event.keyCode === 13) {
-                if (input.value === '') {
-                    alert('不能为空');
-                } else {
-                    execAddCate(currentCate, input.value);
-                }
-            }
-        });
+        return;
     }
+    if (currentCate) {
+        // 不允许给已有task的category添加sub-category
+        var cateStr = currentCate.innerHTML;
+        var numTask = cateStr.substring(cateStr.indexOf('(') + 1, cateStr.indexOf(')'));
+        if (parseInt(numTask) !== 0) {
+            alert('不能为已有任务的分类添加子分类');
+            return;
+        }
+    }
+    overlay('addCate');
+    var input = document.getElementById('mask-input');
+    addEvent(input, 'keyup', function(event) {
+        var inputValue = input.value;
+        if (event.keyCode === 13) {
+            if (inputValue === '') {
+                alert('分类名不能为空');
+            } else if (inputValue.indexOf(',') !== -1){
+                alert('命名不能包含逗号');
+            } else if (isDuplicateKey(inputValue)) {
+                // category和task都不允许重名
+                alert('不能重复命名分类或任务');
+            } else {
+                execAddCate(currentCate, inputValue);
+            }
+        }
+    });
+}
+
+function isDuplicateKey(value) {
+    var flag = false;
+    var nameList = localStorage.getItem('***名单');
+    nameList = nameList.split(',');
+    for (var i=0; i<nameList.length; i++) {
+        if (nameList[i] === value) {
+            flag = true;
+            break;
+        }
+    }
+    return flag;
 }
 
 function execAddCate(currentCate, cateName) {
-    // todo: storage
-
+    setCate(currentCate, cateName);
     clearOverlay('addCate');
-
-    var newCate = document.createElement('li');
-    newCate.innerHTML = cateName + '&nbsp;(0)<span class="icon-delete"></span>';
-    if (!currentCate) {
-        newCate.className = 'icon-floder current-cate';
-        currentCate = document.getElementById('default');
-        removeClass(document.getElementById('all-task'), 'current-cate');
-        currentCate.parentElement.insertBefore(newCate, currentCate);
-    } else {
-        newCate.className = 'icon-paper current-cate';
-        newCate.style.paddingLeft = parseInt(currentCate.style.paddingLeft || 0) + 20 + 'px';
-        newCate.style.backgroundPosition = parseInt(currentCate.style.backgroundPosition || '10px 6px') + 20 + 'px 6px';
-        removeClass(currentCate, 'current-cate');
-        currentCate.parentElement.insertBefore(newCate, currentCate.nextSibling);
-    }
+    getCate(currentCate, cateName, false);
     // todo: getTask
+}
+
+function addName(newName) {
+    var oldNameList = localStorage.getItem('***名单');
+    localStorage.setItem('***名单', oldNameList + ',' + newName);
 }
 
 function overlay(type, tgtDelCate) {
@@ -191,9 +269,50 @@ function iconDelete(event) {
 function execDelCate(cfmValue, tgtDelCate) {
     clearOverlay('delCate');
     if (cfmValue === '确认') {
-        // todo：storage
-        var cateList = document.getElementById('cate-list');
-        cateList.removeChild(tgtDelCate.parentElement);
+        var tgtCateStr = tgtDelCate.innerHTML;
+        var tgtCateName = tgtCateStr.substring(0, tgtCateStr.indexOf('&nbsp;'));
+        removeCate(tgtCateName);
+        removeCateName(tgtDelCate);
+        initLocalStorage();
         // todo: getTask
     }
+}
+
+function removeCate(cateName) {
+    var subCategory = localStorage.getItem(cateName);
+    if (subCategory) {
+        subCategory = subCategory.split(',');
+        for (var i=0; i<subCategory.length; i++) {
+            removeCate(subCategory[i]);
+        }
+        localStorage.removeItem(cateName);
+    }
+    rmValueStr('***名单', cateName);
+}
+
+function removeCateName(tgtDelCate) {
+    var cateStr = tgtDelCate.innerHTML;
+    var cateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+    var pLeft = parseInt(tgtDelCate.style.paddingLeft || 0);
+    var cateListKey;
+    if (pLeft === 0) {
+        cateListKey = '***分类';
+    } else {
+        var preElement = tgtDelCate;
+        var preElePLeft, preEleStr;
+        do {
+            preElement = preElement.previousElementSibling;
+            preElePLeft = parseInt(preElement.style.paddingLeft || 0);
+        } while (preElePLeft !== pLeft - 20);
+        preEleStr = preElement.innerHTML;
+        cateListKey = preEleStr.substring(0, preEleStr.indexOf('&nbsp;'));
+    }
+    rmValueStr(cateListKey, cateName);
+}
+
+function rmValueStr(key, valueStr) {
+    var value = localStorage.getItem(key);
+    value = value.split(',');
+    value.splice(value.indexOf(valueStr), 1);
+    localStorage.setItem(key, value.join(','));
 }
