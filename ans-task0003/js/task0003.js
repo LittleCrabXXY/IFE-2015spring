@@ -329,22 +329,55 @@ function editTask(isNew) {
     iconEdit.style.display = 'none';
     var btns = document.getElementById('btns');
     btns.style.display = 'inline-block';
-    var taskname = document.getElementById('taskname');
-    var taskdate = document.getElementById('set-date');
-    var taskcontent = document.getElementById('textarea');
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    var taskContent = document.getElementById('textarea');
     if (isNew) {
-        taskname.setAttribute('value', '');
-        taskdate.setAttribute('value', '');
-        taskcontent.innerHTML = '';
+        taskName.setAttribute('value', '');
+        taskDate.setAttribute('value', '');
+        taskContent.innerHTML = '';
     }
-    taskname.removeAttribute('readonly');
-    taskdate.removeAttribute('readonly');
-    taskcontent.removeAttribute('readonly');
+    taskName.removeAttribute('readonly');
+    taskDate.removeAttribute('readonly');
+    taskContent.removeAttribute('readonly');
     var tipTitle = document.getElementById('tip-title');
     var tipDate = document.getElementById('tip-date');
     var tipContent = document.getElementById('tip-content');
     tipTitle.style.display = 'inline-block';
     tipDate.style.display = 'inline-block';
     tipContent.style.display = 'inline-block';
-    taskname.focus();
+    taskName.focus();
+    // events
+    addEvent(taskName, 'keyup', function() {
+        validLength(taskName, 20, tipTitle);
+    });
+    addEvent(taskDate, 'keyup', function() {
+        validDateFmt(taskDate, tipDate);
+    });
+    addEvent(taskContent, 'keyup', function() {
+        validLength(taskContent, 500, tipContent);
+    });
+}
+
+function validLength(taskElem, maxLen, tipElem) {
+    var textLen = taskElem.value.split('').length;
+    var isValid = (textLen === 0 || textLen > maxLen) ? false : true;
+    var arrTip = tipElem.innerHTML.split('/');
+    arrTip[0] = textLen;
+    tipElem.innerHTML = arrTip.join('/');
+    if (isValid) {
+        tipElem.style.color = '#999';
+    } else {
+        tipElem.style.color = '#f00';
+    }
+}
+
+function validDateFmt(taskElem, tipElem) {
+    var reg = /(\d{4})-((1[0-2])|(0[1-9]))-(([12][0-9])|(3[01])|(0[1-9]))/;
+    var isValid = reg.test(taskElem.value);
+    if (isValid) {
+        tipElem.style.color = '#999';
+    } else {
+        tipElem.style.color = '#f00';
+    }
 }
