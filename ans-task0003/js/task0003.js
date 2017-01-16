@@ -14,7 +14,7 @@ window.onload = function() {
     addEvent(allTask, 'click', getTask);
     var cateList = document.getElementById('cate-list');
     delegateEvent(cateList, 'li', 'click', getTask);
-    // cate-list: add
+    // cate-list: add category
     var addCate = document.getElementById('add-cate');
     addEvent(addCate, 'click', preAddCate);
     // cate-list: delete
@@ -25,6 +25,11 @@ window.onload = function() {
     delegateEvent(cateList, 'span', 'click', function(event) {
         var tgtDelCate = (event.target || event.srcElement).parentElement;
         overlay('delCate', tgtDelCate);
+    });
+    // task-list: add task
+    var addTask = document.getElementById('add-task');
+    addEvent(addTask, 'click', function() {
+        editTask(true);
     });
 };
 
@@ -200,14 +205,11 @@ function overlay(type, tgtDelCate) {
         clearOverlay(type);
     });
     // add input
-    if (type === 'addCate' || type === 'addTask') {
+    if (type === 'addCate') {
         var input = document.createElement('input');
         input.id = 'mask-input';
         input.className = 'mask-input';
         input.setAttribute('type', 'text');
-        if (type === 'addTask') {
-            input.style.left = '242px';
-        }
         document.body.appendChild(input);
         input = document.getElementById('mask-input');
         input.focus();
@@ -234,7 +236,7 @@ function overlay(type, tgtDelCate) {
 }
 
 function clearOverlay(type) {
-    if (type === 'addCate' || type === 'addTask') {
+    if (type === 'addCate') {
         var input = document.getElementById('mask-input');
         document.body.removeChild(input);
     }
@@ -315,4 +317,34 @@ function rmValueStr(key, valueStr) {
     value = value.split(',');
     value.splice(value.indexOf(valueStr), 1);
     localStorage.setItem(key, value.join(','));
+}
+
+/* task related */
+
+function editTask(isNew) {
+    // style
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    iconFinish.style.display = 'none';
+    iconEdit.style.display = 'none';
+    var btns = document.getElementById('btns');
+    btns.style.display = 'inline-block';
+    var taskname = document.getElementById('taskname');
+    var taskdate = document.getElementById('set-date');
+    var taskcontent = document.getElementById('textarea');
+    if (isNew) {
+        taskname.setAttribute('value', '');
+        taskdate.setAttribute('value', '');
+        taskcontent.innerHTML = '';
+    }
+    taskname.removeAttribute('readonly');
+    taskdate.removeAttribute('readonly');
+    taskcontent.removeAttribute('readonly');
+    var tipTitle = document.getElementById('tip-title');
+    var tipDate = document.getElementById('tip-date');
+    var tipContent = document.getElementById('tip-content');
+    tipTitle.style.display = 'inline-block';
+    tipDate.style.display = 'inline-block';
+    tipContent.style.display = 'inline-block';
+    taskname.focus();
 }

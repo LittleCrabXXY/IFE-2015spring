@@ -197,6 +197,7 @@
 
 .task-title,
 .task-date {
+    position: relative;
     border-bottom: 1px solid #ccc;
     height: 50px;
     text-indent: 15px;
@@ -247,6 +248,7 @@
 }
 
 .textarea {
+    position: relative;
     padding: 15px;
     font-size: 0;
 }
@@ -262,7 +264,7 @@
 }
 
 .btns {
-    display: inline-block;
+    display: none;
     margin-left: 50%;
     height: 40px;
     font: 12px/40px "Microsoft YaHei", sans-serif;
@@ -324,4 +326,22 @@
 
 .confirm-cancel {
     margin-left: 20px;
+}
+
+#taskname {
+    width: 70%;
+}
+
+#set-date {
+    width: 55%;
+}
+
+.tips {
+    display: none;
+    position: absolute;
+    right: 15px;
+    bottom: 17px;
+    font: 12px "MicroSoft YaHei", sans-serif;
+    text-indent: 0;
+    color: #999;
 }

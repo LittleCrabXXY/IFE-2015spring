@@ -40,24 +40,27 @@
                     <li class="current-task">todo5</li>
                 </ul>
             </div>
-            <div class="add font12 icon-add">新增任务</div>
+            <div class="add font12 icon-add" id="add-task">新增任务</div>
         </div>
         <div class="content">
             <div class="inner-content" id="inner-content">
                 <div class="task-title" id="task-title">
-                    <input class="set" type="text" name="" value="todox">
-                    <span class="icon-finish"></span>
-                    <span class="icon-edit"></span>
+                    <input class="set" type="text" name="" id="taskname" value="todox" readonly>
+                    <span class="icon-finish" id="icon-finish" title="已完成"></span>
+                    <span class="icon-edit" id="icon-edit" title="编辑"></span>
+                    <span class="tips" id="tip-title">0/20</span>
                 </div>
                 <div class="task-date" id="task-date">
                     <label for="set-date">任务日期：</label>
-                    <input class="set" type="text" name="" id="set-date" value="2016-11-07">
+                    <input class="set" type="text" name="" id="set-date" value="2016-11-07" readonly>
+                    <span class="tips" id="tip-date">yyyy-mm-dd</span>
                 </div>
                 <div class="textarea">
-                    <textarea  id="textarea">todox的内容</textarea>
+                    <textarea id="textarea" readonly>todox的内容</textarea>
+                    <span class="tips" id="tip-content">0/500</span>
                 </div>
                 <div class="add">
-                    <span class="btns">
+                    <span class="btns" id="btns">
                         <input type="button" value="确认">
                         <input class="btn-cancel" type="button" value="取消">
                     </span>
