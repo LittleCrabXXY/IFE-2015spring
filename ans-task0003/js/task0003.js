@@ -14,7 +14,7 @@ window.onload = function() {
     addEvent(allTask, 'click', getTask);
     var cateList = document.getElementById('cate-list');
     delegateEvent(cateList, 'li', 'click', getTask);
-    // cate-list: add
+    // cate-list: add category
     var addCate = document.getElementById('add-cate');
     addEvent(addCate, 'click', preAddCate);
     // cate-list: delete
@@ -26,6 +26,13 @@ window.onload = function() {
         var tgtDelCate = (event.target || event.srcElement).parentElement;
         overlay('delCate', tgtDelCate);
     });
+    // task-list: add task
+    var addTask = document.getElementById('add-task');
+    addEvent(addTask, 'click', function() {
+        editTask(true);
+    });
+    // task-content: add events
+    addTaskContentEvents();
 };
 
 function initLocalStorage() {
@@ -200,14 +207,11 @@ function overlay(type, tgtDelCate) {
         clearOverlay(type);
     });
     // add input
-    if (type === 'addCate' || type === 'addTask') {
+    if (type === 'addCate') {
         var input = document.createElement('input');
         input.id = 'mask-input';
         input.className = 'mask-input';
         input.setAttribute('type', 'text');
-        if (type === 'addTask') {
-            input.style.left = '242px';
-        }
         document.body.appendChild(input);
         input = document.getElementById('mask-input');
         input.focus();
@@ -234,7 +238,7 @@ function overlay(type, tgtDelCate) {
 }
 
 function clearOverlay(type) {
-    if (type === 'addCate' || type === 'addTask') {
+    if (type === 'addCate') {
         var input = document.getElementById('mask-input');
         document.body.removeChild(input);
     }
@@ -315,4 +319,102 @@ function rmValueStr(key, valueStr) {
     value = value.split(',');
     value.splice(value.indexOf(valueStr), 1);
     localStorage.setItem(key, value.join(','));
+}
+
+/* task related */
+
+function editTask(isNew) {
+    var btns = document.getElementById('btns');
+    btns.style.display = 'inline-block';
+    var cursor = document.getElementById('cursor');
+    cursor.style.cursor = 'pointer';
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    taskDate.previousElementSibling.style.visibility = 'visible';
+    var taskContent = document.getElementById('textarea');
+    if (isNew) {
+        taskName.setAttribute('value', '');
+        taskDate.setAttribute('value', '');
+        taskContent.innerHTML = '';
+    }
+    taskName.removeAttribute('readonly');
+    taskDate.removeAttribute('readonly');
+    taskContent.removeAttribute('readonly');
+    var tipTitle = document.getElementById('tip-title');
+    var tipDate = document.getElementById('tip-date');
+    var tipContent = document.getElementById('tip-content');
+    tipTitle.style.display = 'inline-block';
+    tipDate.style.display = 'inline-block';
+    tipContent.style.display = 'inline-block';
+    taskName.focus();
+}
+
+function addTaskContentEvents() {
+    var taskName = document.getElementById('taskname');
+    var tipTitle = document.getElementById('tip-title');
+    addEvent(taskName, 'keyup', function() {
+        validLength(taskName, 20, tipTitle);
+    });
+    var taskDate = document.getElementById('set-date');
+    var tipDate = document.getElementById('tip-date');
+    addEvent(taskDate, 'keyup', function() {
+        validDateFmt(taskDate, tipDate);
+    });
+    var taskContent = document.getElementById('textarea');
+    var tipContent = document.getElementById('tip-content');
+    addEvent(taskContent, 'keyup', function() {
+        validLength(taskContent, 500, tipContent);
+    });
+    // var btnConfirm = document.getElementById('btn-confirm');
+    var btnCancel = document.getElementById('btn-cancel');
+    // addEvent(btnConfirm, 'click', confirmTask);
+    addEvent(btnCancel, 'click', cancelTask);
+}
+
+function validLength(taskElem, maxLen, tipElem) {
+    var textLen = taskElem.value.split('').length;
+    var isValid = (textLen === 0 || textLen > maxLen) ? false : true;
+    var tipText = tipElem.innerHTML;
+    var prefix = tipText.substring(0, tipText.indexOf('&nbsp;'));
+    var arrTip = tipText.split('/');
+    arrTip[0] = textLen;
+    tipElem.innerHTML = prefix + '&nbsp;' + arrTip.join('/');
+    if (isValid) {
+        tipElem.style.color = '#999';
+    } else {
+        tipElem.style.color = '#f00';
+    }
+}
+
+function validDateFmt(taskElem, tipElem) {
+    var reg = /(\d{4})-((1[0-2])|(0[1-9]))-(([12][0-9])|(3[01])|(0[1-9]))/;
+    var isValid = reg.test(taskElem.value);
+    if (isValid) {
+        tipElem.style.color = '#999';
+    } else {
+        tipElem.style.color = '#f00';
+    }
+}
+
+function cancelTask() {
+    var btns = document.getElementById('btns');
+    btns.style.display = 'none';
+    var cursor = document.getElementById('cursor');
+    cursor.style.cursor = 'auto';
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    taskDate.previousElementSibling.style.visibility = 'hidden';
+    var taskContent = document.getElementById('textarea');
+    taskName.setAttribute('value', '');
+    taskDate.setAttribute('value', '');
+    taskContent.innerHTML = '';
+    taskName.setAttribute('readonly', 'readonly');
+    taskDate.setAttribute('readonly', 'readonly');
+    taskContent.setAttribute('readonly', 'readonly');
+    var tipTitle = document.getElementById('tip-title');
+    var tipDate = document.getElementById('tip-date');
+    var tipContent = document.getElementById('tip-content');
+    tipTitle.style.display = 'none';
+    tipDate.style.display = 'none';
+    tipContent.style.display = 'none';
 }
