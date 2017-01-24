@@ -331,6 +331,7 @@ function editTask(isNew) {
     btns.style.display = 'inline-block';
     var taskName = document.getElementById('taskname');
     var taskDate = document.getElementById('set-date');
+    taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
     if (isNew) {
         taskName.setAttribute('value', '');
@@ -362,9 +363,11 @@ function editTask(isNew) {
 function validLength(taskElem, maxLen, tipElem) {
     var textLen = taskElem.value.split('').length;
     var isValid = (textLen === 0 || textLen > maxLen) ? false : true;
-    var arrTip = tipElem.innerHTML.split('/');
+    var tipText = tipElem.innerHTML;
+    var prefix = tipText.substring(0, tipText.indexOf('&nbsp;'));
+    var arrTip = tipText.split('/');
     arrTip[0] = textLen;
-    tipElem.innerHTML = arrTip.join('/');
+    tipElem.innerHTML = prefix + '&nbsp;' + arrTip.join('/');
     if (isValid) {
         tipElem.style.color = '#999';
     } else {

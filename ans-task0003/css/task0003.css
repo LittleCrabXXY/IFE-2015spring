@@ -224,11 +224,13 @@
 }
 
 .task-date > label {
+    visibility: hidden;
     font: 14px "Microsoft YaHei", sans-serif;
 }
 
 .icon-finish,
 .icon-edit {
+    visibility: hidden;
     position: absolute;
     top: 9px;
     display: inline-block;
