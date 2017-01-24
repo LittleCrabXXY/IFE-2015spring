@@ -8,6 +8,16 @@ function addEvent(element, event, listener) {
     }
 }
 
+// function removeEvent(element, event, listener) {
+//     if (element.removeEventListener) {
+//         element.removeEventListener(event, listener);
+//     } else if (element.detachEvent) {
+//         element.detachEvent('on' + event, listener);
+//     } else {
+//         element['on' + event] = null;
+//     }
+// }
+
 function delegateEvent(element, tag, event, listener) {
     addEvent(element, event, function(e) {
         var target = e.target || e.srcElement;  // IE9+ || IE8

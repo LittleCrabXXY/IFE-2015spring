@@ -31,6 +31,8 @@ window.onload = function() {
     addEvent(addTask, 'click', function() {
         editTask(true);
     });
+    // task-content: add events
+    addTaskContentEvents();
 };
 
 function initLocalStorage() {
@@ -322,13 +324,10 @@ function rmValueStr(key, valueStr) {
 /* task related */
 
 function editTask(isNew) {
-    // style
-    var iconFinish = document.getElementById('icon-finish');
-    var iconEdit = document.getElementById('icon-edit');
-    iconFinish.style.display = 'none';
-    iconEdit.style.display = 'none';
     var btns = document.getElementById('btns');
     btns.style.display = 'inline-block';
+    var cursor = document.getElementById('cursor');
+    cursor.style.cursor = 'pointer';
     var taskName = document.getElementById('taskname');
     var taskDate = document.getElementById('set-date');
     taskDate.previousElementSibling.style.visibility = 'visible';
@@ -348,16 +347,28 @@ function editTask(isNew) {
     tipDate.style.display = 'inline-block';
     tipContent.style.display = 'inline-block';
     taskName.focus();
-    // events
+}
+
+function addTaskContentEvents() {
+    var taskName = document.getElementById('taskname');
+    var tipTitle = document.getElementById('tip-title');
     addEvent(taskName, 'keyup', function() {
         validLength(taskName, 20, tipTitle);
     });
+    var taskDate = document.getElementById('set-date');
+    var tipDate = document.getElementById('tip-date');
     addEvent(taskDate, 'keyup', function() {
         validDateFmt(taskDate, tipDate);
     });
+    var taskContent = document.getElementById('textarea');
+    var tipContent = document.getElementById('tip-content');
     addEvent(taskContent, 'keyup', function() {
         validLength(taskContent, 500, tipContent);
     });
+    // var btnConfirm = document.getElementById('btn-confirm');
+    var btnCancel = document.getElementById('btn-cancel');
+    // addEvent(btnConfirm, 'click', confirmTask);
+    addEvent(btnCancel, 'click', cancelTask);
 }
 
 function validLength(taskElem, maxLen, tipElem) {
@@ -383,4 +394,27 @@ function validDateFmt(taskElem, tipElem) {
     } else {
         tipElem.style.color = '#f00';
     }
+}
+
+function cancelTask() {
+    var btns = document.getElementById('btns');
+    btns.style.display = 'none';
+    var cursor = document.getElementById('cursor');
+    cursor.style.cursor = 'auto';
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    taskDate.previousElementSibling.style.visibility = 'hidden';
+    var taskContent = document.getElementById('textarea');
+    taskName.setAttribute('value', '');
+    taskDate.setAttribute('value', '');
+    taskContent.innerHTML = '';
+    taskName.setAttribute('readonly', 'readonly');
+    taskDate.setAttribute('readonly', 'readonly');
+    taskContent.setAttribute('readonly', 'readonly');
+    var tipTitle = document.getElementById('tip-title');
+    var tipDate = document.getElementById('tip-date');
+    var tipContent = document.getElementById('tip-content');
+    tipTitle.style.display = 'none';
+    tipDate.style.display = 'none';
+    tipContent.style.display = 'none';
 }
