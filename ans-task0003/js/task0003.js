@@ -188,8 +188,8 @@ function preAddCate() {
             } else if (inputValue.indexOf('@') !== -1){
                 alert('命名不能包含@符');
             } else if (isDuplicateKey(inputValue)) {
-                // category不允许重名
-                alert('不能重复命名分类');
+                // category和task均不允许重名
+                alert('不能重复命名分类名称和任务标题');
             } else {
                 execAddCate(currentCate, inputValue);
             }
@@ -358,7 +358,7 @@ function editTask(isNew) {
     var taskDate = document.getElementById('set-date');
     taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
-    if (isNew) {
+    if (isNew) {    // ???
         taskName.value = '';
         taskDate.value = '';
         taskContent.value = '';
@@ -405,6 +405,8 @@ function addTaskContentEvents() {
         var tipContentColor = tipContent.style.color;
         if (tipTitleColor === 'rgb(255, 0, 0)' || tipDateColor === 'rgb(255, 0, 0)' || tipContentColor === 'rgb(255, 0, 0)') {
             // nothing to do.
+        } else if (isDuplicateKey(taskName.value)) {
+            alert('不能重复命名分类名称和任务标题');
         } else {
             confirmTask(taskName.value, taskDate.value, taskContent.value);
         }
@@ -467,15 +469,50 @@ function confirmTask(title, date, content) {
         content: content,
         done: 0     // undo
     };
+    addName(title);
     var cateTask = localStorage.getItem('@' + cateName);
     if (!cateTask) {
         localStorage.setItem('@' + cateName, '{\"tasks\":[]}');
         cateTask = localStorage.getItem('@' + cateName);
     }
     cateTask = JSON.parse(cateTask);
-    cateTask.tasks.push(newTask);//???
+    cateTask.tasks.push(newTask);   //???
     localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
-    // todo
+    // style
+    readonlyStyle(newTask.done);
+    // get task list
+    var target = getCurrentCate() || document.getElementById('all-task');
+    getTask(target);
+    sortByDate();
+    showTask(-1, title);
+}
+
+function readonlyStyle(isDone) {
+    var btns = document.getElementById('btns');
+    btns.style.display = 'none';
+    var cursor = document.getElementById('cursor');
+    cursor.style.cursor = 'auto';
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    var taskContent = document.getElementById('textarea');
+    taskName.setAttribute('readonly', 'readonly');
+    taskDate.setAttribute('readonly', 'readonly');
+    taskContent.setAttribute('readonly', 'readonly');
+    var tipTitle = document.getElementById('tip-title');
+    var tipDate = document.getElementById('tip-date');
+    var tipContent = document.getElementById('tip-content');
+    tipTitle.style.display = 'none';
+    tipDate.style.display = 'none';
+    tipContent.style.display = 'none';
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    if (isDone) {
+        iconFinish.style.visibility = 'hidden';
+        iconEdit.style.visibility = 'hidden';
+    } else {
+        iconFinish.style.visibility = 'visible';
+        iconEdit.style.visibility = 'visible';
+    }
 }
 
 function getTask(target) {
@@ -517,7 +554,7 @@ function sortByDate() {
     }
 }
 
-function showTask(type) {
+function showTask(type, currentTitle) {
     // type: -1(all), 0(undo), 1(done)
     var taskList = document.getElementById('task-list');
     taskList.innerHTML = '';
@@ -540,6 +577,9 @@ function showTask(type) {
             elementLi.innerHTML = arrTasks[i].title;
             if (arrTasks[i].done) {
                 addClass(elementLi, 'done');
+            }
+            if (currentTitle && currentTitle === arrTasks[i].title) {
+                addClass(elementLi, 'current-task');
             }
             elementUl.appendChild(elementLi);
             elementLi = document.createElement('li');
