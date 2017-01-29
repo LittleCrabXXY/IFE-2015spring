@@ -503,9 +503,19 @@ function getSubTask(cateName) {
 }
 
 function sortByDate() {
-    // todo
+    var tmp;
+    for (var i=1; i<arrTasks.length; i++) {
+        for (var j=0; j<i; j++) {
+            if (arrTasks[i] < arrTasks[j]) {
+                tmp = arrTasks[i];
+                for (var k=i; k>j; k--) {
+                    arrTasks[k] = arrTasks[k-1];
+                }
+                arrTasks[j] = tmp;
+            }
+        }
+    }
 }
 
 function showTask(type) {
-    // todo
 }
