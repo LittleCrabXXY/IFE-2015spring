@@ -103,7 +103,7 @@ function getTaskList(event) {
     focusCurrentCate(target);
     getTask(target);
     sortByDate();
-    showTask('all');
+    showTask(-1);   // all
 }
 
 function focusCurrentCate(target) {
@@ -465,7 +465,7 @@ function confirmTask(title, date, content) {
         title: title,
         date: date,
         content: content,
-        done: false
+        done: 0     // undo
     };
     var cateTask = localStorage.getItem('@' + cateName);
     if (!cateTask) {
@@ -506,7 +506,7 @@ function sortByDate() {
     var tmp;
     for (var i=1; i<arrTasks.length; i++) {
         for (var j=0; j<i; j++) {
-            if (arrTasks[i] < arrTasks[j]) {
+            if (arrTasks[i].date < arrTasks[j].date) {
                 tmp = arrTasks[i];
                 for (var k=i; k>j; k--) {
                     arrTasks[k] = arrTasks[k-1];
@@ -518,4 +518,32 @@ function sortByDate() {
 }
 
 function showTask(type) {
+    // type: -1(all), 0(undo), 1(done)
+    var taskList = document.getElementById('task-list');
+    taskList.innerHTML = '';
+    var elementP = document.createElement('p');
+    var elementUl = document.createElement('ul');
+    var elementLi = document.createElement('li');
+    var tmpDate = 'xxxx-xx-xx';
+    for (var i=0; i<arrTasks.length; i++) {
+        if (type === -1 || type === arrTasks[i].done) {
+            if (arrTasks[i].date !== tmpDate) {
+                if (elementUl.innerHTML !== '') {
+                    taskList.appendChild(elementUl);
+                    elementUl = document.createElement('ul');
+                }
+                elementP.innerHTML = arrTasks[i].date;
+                taskList.appendChild(elementP);
+                elementP = document.createElement('p');
+                tmpDate = arrTasks[i].date;
+            }
+            elementLi.innerHTML = arrTasks[i].title;
+            if (arrTasks[i].done) {
+                addClass(elementLi, 'done');
+            }
+            elementUl.appendChild(elementLi);
+            elementLi = document.createElement('li');
+        }
+    }
+    taskList.appendChild(elementUl);
 }
