@@ -11,9 +11,9 @@ window.onload = function() {
     initLocalStorage();
     // cate-list: change category
     var allTask = document.getElementById('all-task');
-    addEvent(allTask, 'click', getTask);
+    addEvent(allTask, 'click', getTaskList);
     var cateList = document.getElementById('cate-list');
-    delegateEvent(cateList, 'li', 'click', getTask);
+    delegateEvent(cateList, 'li', 'click', getTaskList);
     // cate-list: add category
     var addCate = document.getElementById('add-cate');
     addEvent(addCate, 'click', preAddCate);
@@ -98,16 +98,22 @@ function setCate(currentCate, cateName) {
     addName(cateName);
 }
 
-function getTask(event) {
+function getTaskList(event) {
+    var target = event.target || event.srcElement;
+    focusCurrentCate(target);
+    getTask(target);
+    sortByDate();
+    showTask('all');
+}
+
+function focusCurrentCate(target) {
     var allTask = document.getElementById('all-task');
     removeClass(allTask, 'current-cate');
     var lis = document.getElementById('cate-list').getElementsByTagName('li');
     for (var i=0; i<lis.length; i++) {
         removeClass(lis[i], 'current-cate');
     }
-    var target = event.target || event.srcElement;
     addClass(target, 'current-cate');
-    // todo
 }
 
 function adaptiveHeight(minH) {
@@ -341,6 +347,7 @@ function rmValueStr(key, valueStr) {
 }
 
 /* task related */
+var arrTasks = [];
 
 function editTask(isNew) {
     var btns = document.getElementById('btns');
@@ -468,5 +475,37 @@ function confirmTask(title, date, content) {
     cateTask = JSON.parse(cateTask);
     cateTask.tasks.push(newTask);//???
     localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
+    // todo
+}
+
+function getTask(target) {
+    var cateStr = target.innerHTML;
+    var cateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+    if (cateName === '所有任务') {
+        cateName = '***分类';
+    }
+    arrTasks = [];
+    getSubTask(cateName);
+}
+
+function getSubTask(cateName) {
+    if (localStorage.getItem('@' + cateName)) {
+        var subTasks = JSON.parse(localStorage.getItem('@' + cateName)).tasks;
+        for (var i=0; i<subTasks.length; i++) {
+            arrTasks.push(subTasks[i]);
+        }
+    } else if (localStorage.getItem(cateName)) {
+        var subCates = localStorage.getItem(cateName);
+        for (var j=0; j<subCates.length; j++) {
+            getSubTask(subCates[i]);
+        }
+    }
+}
+
+function sortByDate() {
+    // todo
+}
+
+function showTask(type) {
     // todo
 }
