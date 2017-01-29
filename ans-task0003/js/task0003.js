@@ -545,5 +545,7 @@ function showTask(type) {
             elementLi = document.createElement('li');
         }
     }
-    taskList.appendChild(elementUl);
+    if (elementUl.innerHTML !== '') {
+        taskList.appendChild(elementUl);
+    }
 }
