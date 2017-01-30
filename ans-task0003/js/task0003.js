@@ -42,7 +42,6 @@ window.onload = function() {
 
 function initLocalStorage() {
     var cateList = document.getElementById('cate-list');
-    // todo: (0)
     cateList.innerHTML = '<li class="default icon-floder current-cate" id="default">默认分类&nbsp;(0)</li>';
     if (localStorage.length === 0) {
         localStorage.setItem('***分类', '默认分类');
@@ -54,6 +53,16 @@ function initLocalStorage() {
             getCate(null, topCate[i], true);
         }
     }
+    // get number of tasks
+    var allTask = document.getElementById('all-task');
+    getTask(allTask);
+    allTask.innerHTML = allTask.innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    var lis = cateList.getElementsByTagName('li');
+    for (var j=0; j<lis.length; j++) {
+        getTask(lis[j]);
+        lis[j].innerHTML = lis[j].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    }
+    // todo
 }
 
 function getCate(currentCate, cateName, isInit) {
@@ -532,9 +541,9 @@ function getSubTask(cateName) {
             arrTasks.push(subTasks[i]);
         }
     } else if (localStorage.getItem(cateName)) {
-        var subCates = localStorage.getItem(cateName);
+        var subCates = localStorage.getItem(cateName).split(',');
         for (var j=0; j<subCates.length; j++) {
-            getSubTask(subCates[i]);
+            getSubTask(subCates[j]);
         }
     }
 }
