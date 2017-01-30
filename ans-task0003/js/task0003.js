@@ -62,7 +62,9 @@ function initLocalStorage() {
         getTask(lis[j]);
         lis[j].innerHTML = lis[j].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
     }
-    // todo
+    // show default task list
+    sortByDate();
+    showTask(-1);
 }
 
 function getCate(currentCate, cateName, isInit) {
