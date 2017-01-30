@@ -26,6 +26,9 @@ window.onload = function() {
         var tgtDelCate = (event.target || event.srcElement).parentElement;
         overlay('delCate', tgtDelCate);
     });
+    // task-list: filter
+    var filter = document.getElementById('filter');
+    delegateEvent(filter, 'span', 'click', execFilter);
     // task-list: add task
     var addTask = document.getElementById('add-task');
     addEvent(addTask, 'click', function() {
@@ -598,5 +601,27 @@ function showTask(type, currentTitle) {
     }
     if (elementUl.innerHTML !== '') {
         taskList.appendChild(elementUl);
+    }
+}
+
+function execFilter(event) {
+    var spans = document.getElementById('filter').getElementsByTagName('span');
+    for (var i=0; i<spans.length; i++) {
+        removeClass(spans[i], 'current-filter');
+    }
+    var target = event.target || event.srcElement;
+    addClass(target, 'current-filter');
+    switch (target.innerHTML) {
+        case '所有':
+            showTask(-1);
+            break;
+        case '未完成':
+            showTask(0);
+            break;
+        case '已完成':
+            showTask(1);
+            break;
+        default:
+            break;
     }
 }
