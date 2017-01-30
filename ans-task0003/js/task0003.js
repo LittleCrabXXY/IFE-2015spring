@@ -11,9 +11,9 @@ window.onload = function() {
     initLocalStorage();
     // cate-list: change category
     var allTask = document.getElementById('all-task');
-    addEvent(allTask, 'click', getTask);
+    addEvent(allTask, 'click', getTaskList);
     var cateList = document.getElementById('cate-list');
-    delegateEvent(cateList, 'li', 'click', getTask);
+    delegateEvent(cateList, 'li', 'click', getTaskList);
     // cate-list: add category
     var addCate = document.getElementById('add-cate');
     addEvent(addCate, 'click', preAddCate);
@@ -26,10 +26,18 @@ window.onload = function() {
         var tgtDelCate = (event.target || event.srcElement).parentElement;
         overlay('delCate', tgtDelCate);
     });
+    // task-list: filter
+    var filter = document.getElementById('filter');
+    delegateEvent(filter, 'span', 'click', execFilter);
     // task-list: add task
     var addTask = document.getElementById('add-task');
     addEvent(addTask, 'click', function() {
-        editTask(true);
+        var cateName = getCurrentCateName();
+        if (localStorage.getItem(cateName)) {
+            alert('不能为已有子分类的分类添加任务');
+        } else {
+            editTask(true);
+        }
     });
     // task-content: add events
     addTaskContentEvents();
@@ -37,7 +45,6 @@ window.onload = function() {
 
 function initLocalStorage() {
     var cateList = document.getElementById('cate-list');
-    // todo: (0)
     cateList.innerHTML = '<li class="default icon-floder current-cate" id="default">默认分类&nbsp;(0)</li>';
     if (localStorage.length === 0) {
         localStorage.setItem('***分类', '默认分类');
@@ -49,6 +56,18 @@ function initLocalStorage() {
             getCate(null, topCate[i], true);
         }
     }
+    // get number of tasks
+    var allTask = document.getElementById('all-task');
+    getTask(allTask);
+    allTask.innerHTML = allTask.innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    var lis = cateList.getElementsByTagName('li');
+    for (var j=0; j<lis.length; j++) {
+        getTask(lis[j]);
+        lis[j].innerHTML = lis[j].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    }
+    // show default task list
+    sortByDate();
+    showTask(-1);
 }
 
 function getCate(currentCate, cateName, isInit) {
@@ -93,16 +112,22 @@ function setCate(currentCate, cateName) {
     addName(cateName);
 }
 
-function getTask(event) {
+function getTaskList(event) {
+    var target = event.target || event.srcElement;
+    focusCurrentCate(target);
+    getTask(target);
+    sortByDate();
+    showTask(-1);   // all
+}
+
+function focusCurrentCate(target) {
     var allTask = document.getElementById('all-task');
     removeClass(allTask, 'current-cate');
     var lis = document.getElementById('cate-list').getElementsByTagName('li');
     for (var i=0; i<lis.length; i++) {
         removeClass(lis[i], 'current-cate');
     }
-    var target = event.target || event.srcElement;
     addClass(target, 'current-cate');
-    // todo
 }
 
 function adaptiveHeight(minH) {
@@ -126,9 +151,8 @@ function adaptiveHeight(minH) {
     textarea.style.height = textareaH + 'px';
 }
 
-function preAddCate() {
+function getCurrentCate() {
     var lis = document.getElementById('cate-list').getElementsByTagName('li');
-    // find current-cate
     var currentCate = null;
     for (var i=0; i<lis.length; i++) {
         currentCate = lis[i];
@@ -139,12 +163,25 @@ function preAddCate() {
     if (i === lis.length) {
         currentCate = null;
     }
+    return currentCate;
+}
+
+function getCurrentCateName() {
+    var currentCate = getCurrentCate() || document.getElementById('default');
+    var cateStr = currentCate.innerHTML;
+    var cateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+    return cateName;
+}
+
+function preAddCate() {
+    // find current-cate
+    var currentCate = getCurrentCate();
     // default, cate(top-cate, sub-cate)
     if (currentCate && hasClass(currentCate, 'default')) {
         alert('不能为默认分类添加子分类');
         return;
     }
-    if (currentCate) {
+    if (currentCate) {  // todo: ???
         // 不允许给已有task的category添加sub-category
         var cateStr = currentCate.innerHTML;
         var numTask = cateStr.substring(cateStr.indexOf('(') + 1, cateStr.indexOf(')'));
@@ -162,9 +199,11 @@ function preAddCate() {
                 alert('分类名不能为空');
             } else if (inputValue.indexOf(',') !== -1){
                 alert('命名不能包含逗号');
+            } else if (inputValue.indexOf('@') !== -1){
+                alert('命名不能包含@符');
             } else if (isDuplicateKey(inputValue)) {
-                // category和task都不允许重名
-                alert('不能重复命名分类或任务');
+                // category和task均不允许重名
+                alert('不能重复命名分类名称和任务标题');
             } else {
                 execAddCate(currentCate, inputValue);
             }
@@ -322,6 +361,7 @@ function rmValueStr(key, valueStr) {
 }
 
 /* task related */
+var arrTasks = [];
 
 function editTask(isNew) {
     var btns = document.getElementById('btns');
@@ -332,10 +372,10 @@ function editTask(isNew) {
     var taskDate = document.getElementById('set-date');
     taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
-    if (isNew) {
-        taskName.setAttribute('value', '');
-        taskDate.setAttribute('value', '');
-        taskContent.innerHTML = '';
+    if (isNew) {    // ???
+        taskName.value = '';
+        taskDate.value = '';
+        taskContent.value = '';
     }
     taskName.removeAttribute('readonly');
     taskDate.removeAttribute('readonly');
@@ -350,10 +390,12 @@ function editTask(isNew) {
 }
 
 function addTaskContentEvents() {
+    var maxTitleLen = 20,
+        maxContentLen = 500;
     var taskName = document.getElementById('taskname');
     var tipTitle = document.getElementById('tip-title');
     addEvent(taskName, 'keyup', function() {
-        validLength(taskName, 20, tipTitle);
+        validLength(taskName, maxTitleLen, tipTitle);
     });
     var taskDate = document.getElementById('set-date');
     var tipDate = document.getElementById('tip-date');
@@ -363,12 +405,26 @@ function addTaskContentEvents() {
     var taskContent = document.getElementById('textarea');
     var tipContent = document.getElementById('tip-content');
     addEvent(taskContent, 'keyup', function() {
-        validLength(taskContent, 500, tipContent);
+        validLength(taskContent, maxContentLen, tipContent);
     });
-    // var btnConfirm = document.getElementById('btn-confirm');
     var btnCancel = document.getElementById('btn-cancel');
-    // addEvent(btnConfirm, 'click', confirmTask);
     addEvent(btnCancel, 'click', cancelTask);
+    var btnConfirm = document.getElementById('btn-confirm');
+    addEvent(btnConfirm, 'click', function() {
+        validLength(taskName, maxTitleLen, tipTitle);
+        validDateFmt(taskDate, tipDate);
+        validLength(taskContent, maxContentLen, tipContent);
+        var tipTitleColor = tipTitle.style.color;
+        var tipDateColor = tipDate.style.color;
+        var tipContentColor = tipContent.style.color;
+        if (tipTitleColor === 'rgb(255, 0, 0)' || tipDateColor === 'rgb(255, 0, 0)' || tipContentColor === 'rgb(255, 0, 0)') {
+            // nothing to do.
+        } else if (isDuplicateKey(taskName.value)) {
+            alert('不能重复命名分类名称和任务标题');
+        } else {
+            confirmTask(taskName.value, taskDate.value, taskContent.value);
+        }
+    });
 }
 
 function validLength(taskElem, maxLen, tipElem) {
@@ -405,9 +461,9 @@ function cancelTask() {
     var taskDate = document.getElementById('set-date');
     taskDate.previousElementSibling.style.visibility = 'hidden';
     var taskContent = document.getElementById('textarea');
-    taskName.setAttribute('value', '');
-    taskDate.setAttribute('value', '');
-    taskContent.innerHTML = '';
+    taskName.value = '';
+    taskDate.value = '';
+    taskContent.value = '';
     taskName.setAttribute('readonly', 'readonly');
     taskDate.setAttribute('readonly', 'readonly');
     taskContent.setAttribute('readonly', 'readonly');
@@ -417,4 +473,155 @@ function cancelTask() {
     tipTitle.style.display = 'none';
     tipDate.style.display = 'none';
     tipContent.style.display = 'none';
+}
+
+function confirmTask(title, date, content) {
+    var cateName = getCurrentCateName();
+    var newTask = {
+        title: title,
+        date: date,
+        content: content,
+        done: 0     // undo
+    };
+    addName(title);
+    var cateTask = localStorage.getItem('@' + cateName);
+    if (!cateTask) {
+        localStorage.setItem('@' + cateName, '{\"tasks\":[]}');
+        cateTask = localStorage.getItem('@' + cateName);
+    }
+    cateTask = JSON.parse(cateTask);
+    cateTask.tasks.push(newTask);   //???
+    localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
+    // style
+    readonlyStyle(newTask.done);
+    // get task list
+    var target = getCurrentCate() || document.getElementById('all-task');
+    getTask(target);
+    sortByDate();
+    showTask(-1, title);
+}
+
+function readonlyStyle(isDone) {
+    var btns = document.getElementById('btns');
+    btns.style.display = 'none';
+    var cursor = document.getElementById('cursor');
+    cursor.style.cursor = 'auto';
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    var taskContent = document.getElementById('textarea');
+    taskName.setAttribute('readonly', 'readonly');
+    taskDate.setAttribute('readonly', 'readonly');
+    taskContent.setAttribute('readonly', 'readonly');
+    var tipTitle = document.getElementById('tip-title');
+    var tipDate = document.getElementById('tip-date');
+    var tipContent = document.getElementById('tip-content');
+    tipTitle.style.display = 'none';
+    tipDate.style.display = 'none';
+    tipContent.style.display = 'none';
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    if (isDone) {
+        iconFinish.style.visibility = 'hidden';
+        iconEdit.style.visibility = 'hidden';
+    } else {
+        iconFinish.style.visibility = 'visible';
+        iconEdit.style.visibility = 'visible';
+    }
+}
+
+function getTask(target) {
+    var cateStr = target.innerHTML;
+    var cateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+    if (cateName === '所有任务') {
+        cateName = '***分类';
+    }
+    arrTasks = [];
+    getSubTask(cateName);
+}
+
+function getSubTask(cateName) {
+    if (localStorage.getItem('@' + cateName)) {
+        var subTasks = JSON.parse(localStorage.getItem('@' + cateName)).tasks;
+        for (var i=0; i<subTasks.length; i++) {
+            arrTasks.push(subTasks[i]);
+        }
+    } else if (localStorage.getItem(cateName)) {
+        var subCates = localStorage.getItem(cateName).split(',');
+        for (var j=0; j<subCates.length; j++) {
+            getSubTask(subCates[j]);
+        }
+    }
+}
+
+function sortByDate() {
+    var tmp;
+    for (var i=1; i<arrTasks.length; i++) {
+        for (var j=0; j<i; j++) {
+            if (arrTasks[i].date < arrTasks[j].date) {
+                tmp = arrTasks[i];
+                for (var k=i; k>j; k--) {
+                    arrTasks[k] = arrTasks[k-1];
+                }
+                arrTasks[j] = tmp;
+            }
+        }
+    }
+}
+
+function showTask(type, currentTitle) {
+    // type: -1(all), 0(undo), 1(done)
+    var taskList = document.getElementById('task-list');
+    taskList.innerHTML = '';
+    var elementP = document.createElement('p');
+    var elementUl = document.createElement('ul');
+    var elementLi = document.createElement('li');
+    var tmpDate = 'xxxx-xx-xx';
+    for (var i=0; i<arrTasks.length; i++) {
+        if (type === -1 || type === arrTasks[i].done) {
+            if (arrTasks[i].date !== tmpDate) {
+                if (elementUl.innerHTML !== '') {
+                    taskList.appendChild(elementUl);
+                    elementUl = document.createElement('ul');
+                }
+                elementP.innerHTML = arrTasks[i].date;
+                taskList.appendChild(elementP);
+                elementP = document.createElement('p');
+                tmpDate = arrTasks[i].date;
+            }
+            elementLi.innerHTML = arrTasks[i].title;
+            if (arrTasks[i].done) {
+                addClass(elementLi, 'done');
+            }
+            if (currentTitle && currentTitle === arrTasks[i].title) {
+                addClass(elementLi, 'current-task');
+            }
+            elementUl.appendChild(elementLi);
+            elementLi = document.createElement('li');
+        }
+    }
+    if (elementUl.innerHTML !== '') {
+        taskList.appendChild(elementUl);
+    }
+}
+
+function execFilter(event) {
+    var spans = document.getElementById('filter').getElementsByTagName('span');
+    for (var i=0; i<spans.length; i++) {
+        removeClass(spans[i], 'current-filter');
+    }
+    var target = event.target || event.srcElement;
+    addClass(target, 'current-filter');
+    switch (target.innerHTML) {
+        case '所有':
+            showTask(-1);
+            break;
+        case '未完成':
+            showTask(0);
+            break;
+        case '已完成':
+            showTask(1);
+            break;
+        default:
+            break;
+    }
 }
