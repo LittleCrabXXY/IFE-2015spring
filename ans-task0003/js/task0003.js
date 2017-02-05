@@ -52,22 +52,18 @@ function initLocalStorage() {
     } else {
         var topCate = localStorage.getItem('***分类');
         topCate = topCate.split(',');
+        removeClass(document.getElementById('all-task'), 'current-cate');
         for (var i=1; i<topCate.length; i++) {
             getCate(null, topCate[i], true);
         }
     }
     // get number of tasks
-    var allTask = document.getElementById('all-task');
-    getTask(allTask);
-    allTask.innerHTML = allTask.innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
-    var lis = cateList.getElementsByTagName('li');
-    for (var j=0; j<lis.length; j++) {
-        getTask(lis[j]);
-        lis[j].innerHTML = lis[j].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
-    }
+    getNumTasks();
     // show default task list
     sortByDate();
     showTask(-1);
+    // style of task content
+    cancelTask();
 }
 
 function getCate(currentCate, cateName, isInit) {
@@ -332,12 +328,19 @@ function execDelCate(cfmValue, tgtDelCate) {
 
 function removeCate(cateName) {
     var subCategory = localStorage.getItem(cateName);
+    var task = localStorage.getItem('@' + cateName);
     if (subCategory) {
         subCategory = subCategory.split(',');
         for (var i=0; i<subCategory.length; i++) {
             removeCate(subCategory[i]);
         }
         localStorage.removeItem(cateName);
+    } else if (task) {
+        task = JSON.parse(task).tasks;
+        for (var j=0; j<task.length; j++) {
+            rmValueStr('***名单', task[j].title);
+        }
+        localStorage.removeItem('@' + cateName);
     }
     rmValueStr('***名单', cateName);
 }
@@ -364,9 +367,15 @@ function removeCateName(tgtDelCate) {
 
 function rmValueStr(key, valueStr) {
     var value = localStorage.getItem(key);
-    value = value.split(',');
-    value.splice(value.indexOf(valueStr), 1);
-    localStorage.setItem(key, value.join(','));
+    if (value) {
+        value = value.split(',');
+        value.splice(value.indexOf(valueStr), 1);
+        if (value.length > 0) {
+            localStorage.setItem(key, value.join(','));
+        } else {
+            localStorage.removeItem(key);
+        }
+    }
 }
 
 /* task related */
@@ -482,6 +491,10 @@ function cancelTask() {
     tipTitle.style.display = 'none';
     tipDate.style.display = 'none';
     tipContent.style.display = 'none';
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    iconFinish.style.visibility = 'hidden';
+    iconEdit.style.visibility = 'hidden';
 }
 
 function confirmTask(title, date, content) {
@@ -503,6 +516,8 @@ function confirmTask(title, date, content) {
     localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
     // style
     readonlyStyle(newTask.done);
+    // get number of tasks
+    getNumTasks();
     // get task list
     var target = getCurrentCate() || document.getElementById('all-task');
     getTask(target);
@@ -559,6 +574,17 @@ function getSubTask(cateName) {
         for (var j=0; j<subCates.length; j++) {
             getSubTask(subCates[j]);
         }
+    }
+}
+
+function getNumTasks() {
+    var allTask = document.getElementById('all-task');
+    getTask(allTask);
+    allTask.innerHTML = allTask.innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    var lis = document.getElementById('cate-list').getElementsByTagName('li');
+    for (var i=0; i<lis.length; i++) {
+        getTask(lis[i]);
+        lis[i].innerHTML = lis[i].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
     }
 }
 
@@ -633,4 +659,5 @@ function execFilter(event) {
         default:
             break;
     }
+    cancelTask();
 }
