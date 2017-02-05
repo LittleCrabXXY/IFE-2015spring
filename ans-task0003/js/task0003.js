@@ -29,6 +29,9 @@ window.onload = function() {
     // task-list: filter
     var filter = document.getElementById('filter');
     delegateEvent(filter, 'span', 'click', execFilter);
+    // task-list: checkout task
+    var taskList = document.getElementById('task-list');
+    delegateEvent(taskList, 'li', 'click', checkoutTask);
     // task-list: add task
     var addTask = document.getElementById('add-task');
     addEvent(addTask, 'click', function() {
@@ -404,6 +407,10 @@ function editTask(isNew) {
     tipTitle.style.display = 'inline-block';
     tipDate.style.display = 'inline-block';
     tipContent.style.display = 'inline-block';
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    iconFinish.style.visibility = 'hidden';
+    iconEdit.style.visibility = 'hidden';
     taskName.focus();
 }
 
@@ -532,6 +539,7 @@ function readonlyStyle(isDone) {
     cursor.style.cursor = 'auto';
     var taskName = document.getElementById('taskname');
     var taskDate = document.getElementById('set-date');
+    taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
     taskName.setAttribute('readonly', 'readonly');
     taskDate.setAttribute('readonly', 'readonly');
@@ -660,4 +668,22 @@ function execFilter(event) {
             break;
     }
     cancelTask();
+}
+
+function checkoutTask(event) {
+    var target = event.target || event.srcElement;
+    var tgtTitle = target.innerHTML;
+    for (var i=0; i<arrTasks.length; i++) {
+        var tgtTask = arrTasks[i];
+        if (tgtTask.title === tgtTitle) {
+            break;
+        }
+    }
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    var taskContent = document.getElementById('textarea');
+    taskName.value = tgtTask.title;
+    taskDate.value = tgtTask.date;
+    taskContent.value = tgtTask.content;
+    readonlyStyle(tgtTask.done);
 }
