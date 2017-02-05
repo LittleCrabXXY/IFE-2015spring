@@ -228,7 +228,17 @@ function execAddCate(currentCate, cateName) {
     setCate(currentCate, cateName);
     clearOverlay('addCate');
     getCate(currentCate, cateName, false);
-    // todo: getTask
+    var lis = document.getElementById('cate-list').getElementsByTagName('li');
+    var target;
+    for (var i=0; i<lis.length; i++) {
+        target = lis[i];
+        if (hasClass(target, 'current-cate')) {
+            break;
+        }
+    }
+    getTask(target);
+    sortByDate();
+    showTask(-1);
 }
 
 function addName(newName) {
@@ -317,7 +327,6 @@ function execDelCate(cfmValue, tgtDelCate) {
         removeCate(tgtCateName);
         removeCateName(tgtDelCate);
         initLocalStorage();
-        // todo: getTask
     }
 }
 
