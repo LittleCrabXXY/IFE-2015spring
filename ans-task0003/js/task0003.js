@@ -117,6 +117,7 @@ function getTaskList(event) {
     getTask(target);
     sortByDate();
     showTask(-1);   // all
+    cancelTask();
 }
 
 function focusCurrentCate(target) {
@@ -382,9 +383,13 @@ function rmValueStr(key, valueStr) {
 }
 
 /* task related */
-var arrTasks = [];
+var arrTasks = [],
+    isNewTask = true;
+
+function markDone() {} // todo
 
 function editTask(isNew) {
+    isNewTask = isNew;
     var btns = document.getElementById('btns');
     btns.style.display = 'inline-block';
     var cursor = document.getElementById('cursor');
@@ -393,7 +398,7 @@ function editTask(isNew) {
     var taskDate = document.getElementById('set-date');
     taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
-    if (isNew) {    // ???
+    if (isNew) {
         taskName.value = '';
         taskDate.value = '';
         taskContent.value = '';
@@ -433,7 +438,28 @@ function addTaskContentEvents() {
         validLength(taskContent, maxContentLen, tipContent);
     });
     var btnCancel = document.getElementById('btn-cancel');
-    addEvent(btnCancel, 'click', cancelTask);
+    addEvent(btnCancel, 'click', function() {
+        if (isNewTask) {
+            cancelTask();
+        } else {
+            var lis = document.getElementById('task-list').getElementsByTagName('li');
+            for (var i=0; i<lis.length; i++) {
+                if (hasClass(lis[i], 'current-task')) {
+                    var oldTitle = lis[i].innerHTML;
+                    break;
+                }
+            }
+            for (var j=0; j<arrTasks.length; j++) {
+                if (arrTasks[j].title === oldTitle) {
+                    taskName.value = arrTasks[j].title;
+                    taskDate.value = arrTasks[j].date;
+                    taskContent.value = arrTasks[j].content;
+                    break;
+                }
+            }
+            readonlyStyle(0);
+        }
+    });
     var btnConfirm = document.getElementById('btn-confirm');
     addEvent(btnConfirm, 'click', function() {
         validLength(taskName, maxTitleLen, tipTitle);
@@ -449,6 +475,13 @@ function addTaskContentEvents() {
         } else {
             confirmTask(taskName.value, taskDate.value, taskContent.value);
         }
+    });
+    // icon-finish, icon-edit
+    var iconFinish = document.getElementById('icon-finish');
+    addEvent(iconFinish, 'click', markDone);
+    var iconEdit = document.getElementById('icon-edit');
+    addEvent(iconEdit, 'click', function() {
+        editTask(false);
     });
 }
 
@@ -512,15 +545,32 @@ function confirmTask(title, date, content) {
         content: content,
         done: 0     // undo
     };
-    addName(title);
     var cateTask = localStorage.getItem('@' + cateName);
     if (!cateTask) {
         localStorage.setItem('@' + cateName, '{\"tasks\":[]}');
         cateTask = localStorage.getItem('@' + cateName);
     }
     cateTask = JSON.parse(cateTask);
-    cateTask.tasks.push(newTask);   //???
+    if (isNewTask) {
+        cateTask.tasks.push(newTask);
+    } else {
+        var lis = document.getElementById('task-list').getElementsByTagName('li');
+        for (var i=0; i<lis.length; i++) {
+            if (hasClass(lis[i], 'current-task')) {
+                var oldTitle = lis[i].innerHTML;
+                break;
+            }
+        }
+        for (var j=0; j<cateTask.tasks.length; j++) {
+            if (cateTask.tasks[j].title === oldTitle) {
+                cateTask.tasks[j] = newTask;
+                break;
+            }
+        }
+        rmValueStr('***名单', oldTitle);
+    }
     localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
+    addName(title);
     // style
     readonlyStyle(newTask.done);
     // get number of tasks
