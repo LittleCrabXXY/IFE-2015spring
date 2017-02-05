@@ -671,10 +671,15 @@ function execFilter(event) {
 }
 
 function checkoutTask(event) {
+    var lis = document.getElementById('task-list').getElementsByTagName('li');
+    for (var i=0; i<lis.length; i++) {
+        removeClass(lis[i], 'current-task');
+    }
     var target = event.target || event.srcElement;
+    addClass(target, 'current-task');
     var tgtTitle = target.innerHTML;
-    for (var i=0; i<arrTasks.length; i++) {
-        var tgtTask = arrTasks[i];
+    for (var j=0; j<arrTasks.length; j++) {
+        var tgtTask = arrTasks[j];
         if (tgtTask.title === tgtTitle) {
             break;
         }
