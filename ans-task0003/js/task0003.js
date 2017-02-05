@@ -181,12 +181,12 @@ function preAddCate() {
         alert('不能为默认分类添加子分类');
         return;
     }
-    if (currentCate) {  // todo: ???
-        // 不允许给已有task的category添加sub-category
+    if (currentCate) {
+        // 不允许给已有直接task的category添加sub-category
         var cateStr = currentCate.innerHTML;
-        var numTask = cateStr.substring(cateStr.indexOf('(') + 1, cateStr.indexOf(')'));
-        if (parseInt(numTask) !== 0) {
-            alert('不能为已有任务的分类添加子分类');
+        var cateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+        if (localStorage.getItem('@' + cateName)) {
+            alert('不能为已有直接任务的分类添加子分类');
             return;
         }
     }
