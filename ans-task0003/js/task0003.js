@@ -386,7 +386,32 @@ function rmValueStr(key, valueStr) {
 var arrTasks = [],
     isNewTask = true;
 
-function markDone() {} // todo
+function markDone() {
+    var title = document.getElementById('taskname').value;
+    for (var i=0; i<arrTasks.length; i++) {
+        if (arrTasks[i].title === title) {
+            var targetCate = arrTasks[i].directCate;
+            break;
+        }
+    }
+    var cateTask = JSON.parse(localStorage.getItem(targetCate));
+    for (i=0; i<cateTask.tasks.length; i++) {
+        if (cateTask.tasks[i].title === title) {
+            cateTask.tasks[i].done = 1;     // done
+            break;
+        }
+    }
+    localStorage.setItem(targetCate, JSON.stringify(cateTask));
+    // style
+    readonlyStyle(1);
+    // get number of tasks
+    getNumTasks();
+    // get task list
+    var target = getCurrentCate() || document.getElementById('all-task');
+    getTask(target);
+    sortByDate();
+    showTask(-1, title);
+}
 
 function editTask(isNew) {
     isNewTask = isNew;
