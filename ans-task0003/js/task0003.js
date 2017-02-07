@@ -538,20 +538,21 @@ function cancelTask() {
 }
 
 function confirmTask(title, date, content) {
-    var cateName = getCurrentCateName();
     var newTask = {
         title: title,
         date: date,
         content: content,
-        done: 0     // undo
+        done: 0,     // undo
     };
-    var cateTask = localStorage.getItem('@' + cateName);
-    if (!cateTask) {
-        localStorage.setItem('@' + cateName, '{\"tasks\":[]}');
-        cateTask = localStorage.getItem('@' + cateName);
-    }
-    cateTask = JSON.parse(cateTask);
     if (isNewTask) {
+        var cateName = getCurrentCateName();
+        newTask.directCate = '@' + cateName;
+        var cateTask = localStorage.getItem(newTask.directCate);
+        if (!cateTask) {
+            localStorage.setItem(newTask.directCate, '{\"tasks\":[]}');
+            cateTask = localStorage.getItem(newTask.directCate);
+        }
+        cateTask = JSON.parse(cateTask);
         cateTask.tasks.push(newTask);
     } else {
         var lis = document.getElementById('task-list').getElementsByTagName('li');
@@ -561,16 +562,23 @@ function confirmTask(title, date, content) {
                 break;
             }
         }
-        for (var j=0; j<cateTask.tasks.length; j++) {
-            if (cateTask.tasks[j].title === oldTitle) {
-                cateTask.tasks[j] = newTask;
+        for (i=0; i<arrTasks.length; i++) {
+            if (arrTasks[i].title === oldTitle) {
+                newTask.directCate = arrTasks[i].directCate;
+                break;
+            }
+        }
+        cateTask = JSON.parse(localStorage.getItem(newTask.directCate));
+        for (i=0; i<cateTask.tasks.length; i++) {
+            if (cateTask.tasks[i].title === oldTitle) {
+                cateTask.tasks[i] = newTask;
                 break;
             }
         }
         rmValueStr('***名单', oldTitle);
     }
-    localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
-    addName(title);
+    localStorage.setItem(newTask.directCate, JSON.stringify(cateTask));
+    addName(newTask.title);
     // style
     readonlyStyle(newTask.done);
     // get number of tasks
@@ -579,7 +587,7 @@ function confirmTask(title, date, content) {
     var target = getCurrentCate() || document.getElementById('all-task');
     getTask(target);
     sortByDate();
-    showTask(-1, title);
+    showTask(-1, newTask.title);
 }
 
 function readonlyStyle(isDone) {
