@@ -266,23 +266,45 @@ function overlay(type, tgtDelCate) {
         input.focus();
     }
     if (type === 'delCate') {
-        var confirm = document.createElement('div');
-        confirm.innerHTML = '<p>确认删除？</p>'
+        var confirmDelCate = document.createElement('div');
+        confirmDelCate.innerHTML = '<p>确认删除该分类？</p>'
             + '<input class="confirm-ok" type="button" value="确认">'
             + '<input class="confirm-cancel" type="button" value="取消">';
-        confirm.id = 'confirm';
-        confirm.className = 'confirm';
-        document.body.appendChild(confirm);
-        delegateEvent(confirm, 'input', 'click', function(event) {
+        confirmDelCate.id = 'confirmDelCate';
+        confirmDelCate.className = 'confirm';
+        document.body.appendChild(confirmDelCate);
+        delegateEvent(confirmDelCate, 'input', 'click', function(event) {
             var target = event.target || event.srcElement;
             var cfmValue = target.getAttribute('value');
             execDelCate(cfmValue, tgtDelCate);
         });
         var winWidth = document.documentElement.clientWidth;
         var winHeight = document.documentElement.clientHeight;
-        confirm = document.getElementById('confirm');
-        confirm.style.left = (winWidth - confirm.offsetWidth)/2 + 'px';
-        confirm.style.top = (winHeight - confirm.offsetHeight)/2 + 'px';
+        confirmDelCate = document.getElementById('confirmDelCate');
+        confirmDelCate.style.left = (winWidth - confirmDelCate.offsetWidth)/2 + 'px';
+        confirmDelCate.style.top = (winHeight - confirmDelCate.offsetHeight)/2 + 'px';
+    }
+    if (type === 'confirmDone') {
+        var confirmDone = document.createElement('div');
+        confirmDone.innerHTML = '<p>确认完成该任务？</p>'
+            + '<input class="confirm-ok" type="button" value="确认">'
+            + '<input class="confirm-cancel" type="button" value="取消">';
+        confirmDone.id = 'confirmDone';
+        confirmDone.className = 'confirm';
+        document.body.appendChild(confirmDone);
+        delegateEvent(confirmDone, 'input', 'click', function(event) {
+            var target = event.target || event.srcElement;
+            var cfmValue = target.getAttribute('value');
+            clearOverlay('confirmDone');
+            if (cfmValue === '确认') {
+                markDone();
+            }
+        });
+        winWidth = document.documentElement.clientWidth;
+        winHeight = document.documentElement.clientHeight;
+        confirmDone = document.getElementById('confirmDone');
+        confirmDone.style.left = (winWidth - confirmDone.offsetWidth)/2 + 'px';
+        confirmDone.style.top = (winHeight - confirmDone.offsetHeight)/2 + 'px';
     }
 }
 
@@ -292,8 +314,12 @@ function clearOverlay(type) {
         document.body.removeChild(input);
     }
     if (type === 'delCate') {
-        var confirm = document.getElementById('confirm');
-        document.body.removeChild(confirm);
+        var confirmDelCate = document.getElementById('confirmDelCate');
+        document.body.removeChild(confirmDelCate);
+    }
+    if (type === 'confirmDone') {
+        var confirmDone = document.getElementById('confirmDone');
+        document.body.removeChild(confirmDone);
     }
     var mask = document.getElementById('mask');
     document.body.removeChild(mask);
@@ -503,7 +529,9 @@ function addTaskContentEvents() {
     });
     // icon-finish, icon-edit
     var iconFinish = document.getElementById('icon-finish');
-    addEvent(iconFinish, 'click', markDone);
+    addEvent(iconFinish, 'click', function() {
+        overlay('confirmDone');
+    });
     var iconEdit = document.getElementById('icon-edit');
     addEvent(iconEdit, 'click', function() {
         editTask(false);
