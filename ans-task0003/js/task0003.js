@@ -49,7 +49,7 @@ window.onload = function() {
 function initLocalStorage() {
     var cateList = document.getElementById('cate-list');
     cateList.innerHTML = '<li class="default icon-floder current-cate" id="default">默认分类&nbsp;(0)</li>';
-    if (localStorage.length === 0) {
+    if (!localStorage.getItem('***分类') || !localStorage.getItem('***名单')) {
         localStorage.setItem('***分类', '默认分类');
         localStorage.setItem('***名单', '***名单,***分类,默认分类');
     } else {
