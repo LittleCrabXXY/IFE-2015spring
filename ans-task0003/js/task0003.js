@@ -190,6 +190,7 @@ function preAddCate() {
             return;
         }
     }
+    cancelTask();
     overlay('addCate');
     var input = document.getElementById('mask-input');
     addEvent(input, 'keyup', function(event) {
@@ -521,7 +522,7 @@ function addTaskContentEvents() {
         var tipContentColor = tipContent.style.color;
         if (tipTitleColor === 'rgb(255, 0, 0)' || tipDateColor === 'rgb(255, 0, 0)' || tipContentColor === 'rgb(255, 0, 0)') {
             // nothing to do.
-        } else if (isDuplicateKey(taskName.value)) {
+        } else if (isNewTask && isDuplicateKey(taskName.value)) {
             alert('不能重复命名分类名称和任务标题');
         } else {
             confirmTask(taskName.value, taskDate.value, taskContent.value);
@@ -554,7 +555,9 @@ function validLength(taskElem, maxLen, tipElem) {
 }
 
 function validDateFmt(taskElem, tipElem) {
-    var reg = /(\d{4})-((1[0-2])|(0[1-9]))-(([12][0-9])|(3[01])|(0[1-9]))/;
+    var reg = new RegExp('^(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})'
+    + '-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))$'
+    + '|^((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)$');
     var isValid = reg.test(taskElem.value);
     if (isValid) {
         tipElem.style.color = '#999';
@@ -611,7 +614,7 @@ function confirmTask(title, date, content) {
         var lis = document.getElementById('task-list').getElementsByTagName('li');
         for (var i=0; i<lis.length; i++) {
             if (hasClass(lis[i], 'current-task')) {
-                var oldTitle = lis[i].innerHTML;
+                var oldTitle = lis[i].textContent;
                 break;
             }
         }
@@ -737,12 +740,12 @@ function showTask(type, currentTitle) {
                     taskList.appendChild(elementUl);
                     elementUl = document.createElement('ul');
                 }
-                elementP.innerHTML = arrTasks[i].date;
+                elementP.textContent = arrTasks[i].date;
                 taskList.appendChild(elementP);
                 elementP = document.createElement('p');
                 tmpDate = arrTasks[i].date;
             }
-            elementLi.innerHTML = arrTasks[i].title;
+            elementLi.textContent = arrTasks[i].title;
             if (arrTasks[i].done) {
                 addClass(elementLi, 'done');
             }
