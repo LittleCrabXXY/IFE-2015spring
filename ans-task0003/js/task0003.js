@@ -29,6 +29,9 @@ window.onload = function() {
     // task-list: filter
     var filter = document.getElementById('filter');
     delegateEvent(filter, 'span', 'click', execFilter);
+    // task-list: checkout task
+    var taskList = document.getElementById('task-list');
+    delegateEvent(taskList, 'li', 'click', checkoutTask);
     // task-list: add task
     var addTask = document.getElementById('add-task');
     addEvent(addTask, 'click', function() {
@@ -46,28 +49,24 @@ window.onload = function() {
 function initLocalStorage() {
     var cateList = document.getElementById('cate-list');
     cateList.innerHTML = '<li class="default icon-floder current-cate" id="default">默认分类&nbsp;(0)</li>';
-    if (localStorage.length === 0) {
+    if (!localStorage.getItem('***分类') || !localStorage.getItem('***名单')) {
         localStorage.setItem('***分类', '默认分类');
         localStorage.setItem('***名单', '***名单,***分类,默认分类');
     } else {
         var topCate = localStorage.getItem('***分类');
         topCate = topCate.split(',');
+        removeClass(document.getElementById('all-task'), 'current-cate');
         for (var i=1; i<topCate.length; i++) {
             getCate(null, topCate[i], true);
         }
     }
     // get number of tasks
-    var allTask = document.getElementById('all-task');
-    getTask(allTask);
-    allTask.innerHTML = allTask.innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
-    var lis = cateList.getElementsByTagName('li');
-    for (var j=0; j<lis.length; j++) {
-        getTask(lis[j]);
-        lis[j].innerHTML = lis[j].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
-    }
+    getNumTasks();
     // show default task list
     sortByDate();
     showTask(-1);
+    // style of task content
+    cancelTask();
 }
 
 function getCate(currentCate, cateName, isInit) {
@@ -118,6 +117,7 @@ function getTaskList(event) {
     getTask(target);
     sortByDate();
     showTask(-1);   // all
+    cancelTask();
 }
 
 function focusCurrentCate(target) {
@@ -181,15 +181,16 @@ function preAddCate() {
         alert('不能为默认分类添加子分类');
         return;
     }
-    if (currentCate) {  // todo: ???
-        // 不允许给已有task的category添加sub-category
+    if (currentCate) {
+        // 不允许给已有直接task的category添加sub-category
         var cateStr = currentCate.innerHTML;
-        var numTask = cateStr.substring(cateStr.indexOf('(') + 1, cateStr.indexOf(')'));
-        if (parseInt(numTask) !== 0) {
-            alert('不能为已有任务的分类添加子分类');
+        var cateName = cateStr.substring(0, cateStr.indexOf('&nbsp;'));
+        if (localStorage.getItem('@' + cateName)) {
+            alert('不能为已有直接任务的分类添加子分类');
             return;
         }
     }
+    cancelTask();
     overlay('addCate');
     var input = document.getElementById('mask-input');
     addEvent(input, 'keyup', function(event) {
@@ -228,7 +229,17 @@ function execAddCate(currentCate, cateName) {
     setCate(currentCate, cateName);
     clearOverlay('addCate');
     getCate(currentCate, cateName, false);
-    // todo: getTask
+    var lis = document.getElementById('cate-list').getElementsByTagName('li');
+    var target;
+    for (var i=0; i<lis.length; i++) {
+        target = lis[i];
+        if (hasClass(target, 'current-cate')) {
+            break;
+        }
+    }
+    getTask(target);
+    sortByDate();
+    showTask(-1);
 }
 
 function addName(newName) {
@@ -256,23 +267,45 @@ function overlay(type, tgtDelCate) {
         input.focus();
     }
     if (type === 'delCate') {
-        var confirm = document.createElement('div');
-        confirm.innerHTML = '<p>确认删除？</p>'
+        var confirmDelCate = document.createElement('div');
+        confirmDelCate.innerHTML = '<p>确认删除该分类？</p>'
             + '<input class="confirm-ok" type="button" value="确认">'
             + '<input class="confirm-cancel" type="button" value="取消">';
-        confirm.id = 'confirm';
-        confirm.className = 'confirm';
-        document.body.appendChild(confirm);
-        delegateEvent(confirm, 'input', 'click', function(event) {
+        confirmDelCate.id = 'confirmDelCate';
+        confirmDelCate.className = 'confirm';
+        document.body.appendChild(confirmDelCate);
+        delegateEvent(confirmDelCate, 'input', 'click', function(event) {
             var target = event.target || event.srcElement;
             var cfmValue = target.getAttribute('value');
             execDelCate(cfmValue, tgtDelCate);
         });
         var winWidth = document.documentElement.clientWidth;
         var winHeight = document.documentElement.clientHeight;
-        confirm = document.getElementById('confirm');
-        confirm.style.left = (winWidth - confirm.offsetWidth)/2 + 'px';
-        confirm.style.top = (winHeight - confirm.offsetHeight)/2 + 'px';
+        confirmDelCate = document.getElementById('confirmDelCate');
+        confirmDelCate.style.left = (winWidth - confirmDelCate.offsetWidth)/2 + 'px';
+        confirmDelCate.style.top = (winHeight - confirmDelCate.offsetHeight)/2 + 'px';
+    }
+    if (type === 'confirmDone') {
+        var confirmDone = document.createElement('div');
+        confirmDone.innerHTML = '<p>确认完成该任务？</p>'
+            + '<input class="confirm-ok" type="button" value="确认">'
+            + '<input class="confirm-cancel" type="button" value="取消">';
+        confirmDone.id = 'confirmDone';
+        confirmDone.className = 'confirm';
+        document.body.appendChild(confirmDone);
+        delegateEvent(confirmDone, 'input', 'click', function(event) {
+            var target = event.target || event.srcElement;
+            var cfmValue = target.getAttribute('value');
+            clearOverlay('confirmDone');
+            if (cfmValue === '确认') {
+                markDone();
+            }
+        });
+        winWidth = document.documentElement.clientWidth;
+        winHeight = document.documentElement.clientHeight;
+        confirmDone = document.getElementById('confirmDone');
+        confirmDone.style.left = (winWidth - confirmDone.offsetWidth)/2 + 'px';
+        confirmDone.style.top = (winHeight - confirmDone.offsetHeight)/2 + 'px';
     }
 }
 
@@ -282,8 +315,12 @@ function clearOverlay(type) {
         document.body.removeChild(input);
     }
     if (type === 'delCate') {
-        var confirm = document.getElementById('confirm');
-        document.body.removeChild(confirm);
+        var confirmDelCate = document.getElementById('confirmDelCate');
+        document.body.removeChild(confirmDelCate);
+    }
+    if (type === 'confirmDone') {
+        var confirmDone = document.getElementById('confirmDone');
+        document.body.removeChild(confirmDone);
     }
     var mask = document.getElementById('mask');
     document.body.removeChild(mask);
@@ -317,18 +354,24 @@ function execDelCate(cfmValue, tgtDelCate) {
         removeCate(tgtCateName);
         removeCateName(tgtDelCate);
         initLocalStorage();
-        // todo: getTask
     }
 }
 
 function removeCate(cateName) {
     var subCategory = localStorage.getItem(cateName);
+    var task = localStorage.getItem('@' + cateName);
     if (subCategory) {
         subCategory = subCategory.split(',');
         for (var i=0; i<subCategory.length; i++) {
             removeCate(subCategory[i]);
         }
         localStorage.removeItem(cateName);
+    } else if (task) {
+        task = JSON.parse(task).tasks;
+        for (var j=0; j<task.length; j++) {
+            rmValueStr('***名单', task[j].title);
+        }
+        localStorage.removeItem('@' + cateName);
     }
     rmValueStr('***名单', cateName);
 }
@@ -355,15 +398,50 @@ function removeCateName(tgtDelCate) {
 
 function rmValueStr(key, valueStr) {
     var value = localStorage.getItem(key);
-    value = value.split(',');
-    value.splice(value.indexOf(valueStr), 1);
-    localStorage.setItem(key, value.join(','));
+    if (value) {
+        value = value.split(',');
+        value.splice(value.indexOf(valueStr), 1);
+        if (value.length > 0) {
+            localStorage.setItem(key, value.join(','));
+        } else {
+            localStorage.removeItem(key);
+        }
+    }
 }
 
 /* task related */
-var arrTasks = [];
+var arrTasks = [],
+    isNewTask = true;
+
+function markDone() {
+    var title = document.getElementById('taskname').value;
+    for (var i=0; i<arrTasks.length; i++) {
+        if (arrTasks[i].title === title) {
+            var targetCate = arrTasks[i].directCate;
+            break;
+        }
+    }
+    var cateTask = JSON.parse(localStorage.getItem(targetCate));
+    for (i=0; i<cateTask.tasks.length; i++) {
+        if (cateTask.tasks[i].title === title) {
+            cateTask.tasks[i].done = 1;     // done
+            break;
+        }
+    }
+    localStorage.setItem(targetCate, JSON.stringify(cateTask));
+    // style
+    readonlyStyle(1);
+    // get number of tasks
+    getNumTasks();
+    // get task list
+    var target = getCurrentCate() || document.getElementById('all-task');
+    getTask(target);
+    sortByDate();
+    showTask(-1, title);
+}
 
 function editTask(isNew) {
+    isNewTask = isNew;
     var btns = document.getElementById('btns');
     btns.style.display = 'inline-block';
     var cursor = document.getElementById('cursor');
@@ -372,7 +450,7 @@ function editTask(isNew) {
     var taskDate = document.getElementById('set-date');
     taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
-    if (isNew) {    // ???
+    if (isNew) {
         taskName.value = '';
         taskDate.value = '';
         taskContent.value = '';
@@ -386,6 +464,10 @@ function editTask(isNew) {
     tipTitle.style.display = 'inline-block';
     tipDate.style.display = 'inline-block';
     tipContent.style.display = 'inline-block';
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    iconFinish.style.visibility = 'hidden';
+    iconEdit.style.visibility = 'hidden';
     taskName.focus();
 }
 
@@ -408,7 +490,28 @@ function addTaskContentEvents() {
         validLength(taskContent, maxContentLen, tipContent);
     });
     var btnCancel = document.getElementById('btn-cancel');
-    addEvent(btnCancel, 'click', cancelTask);
+    addEvent(btnCancel, 'click', function() {
+        if (isNewTask) {
+            cancelTask();
+        } else {
+            var lis = document.getElementById('task-list').getElementsByTagName('li');
+            for (var i=0; i<lis.length; i++) {
+                if (hasClass(lis[i], 'current-task')) {
+                    var oldTitle = lis[i].innerHTML;
+                    break;
+                }
+            }
+            for (var j=0; j<arrTasks.length; j++) {
+                if (arrTasks[j].title === oldTitle) {
+                    taskName.value = arrTasks[j].title;
+                    taskDate.value = arrTasks[j].date;
+                    taskContent.value = arrTasks[j].content;
+                    break;
+                }
+            }
+            readonlyStyle(0);
+        }
+    });
     var btnConfirm = document.getElementById('btn-confirm');
     addEvent(btnConfirm, 'click', function() {
         validLength(taskName, maxTitleLen, tipTitle);
@@ -419,11 +522,20 @@ function addTaskContentEvents() {
         var tipContentColor = tipContent.style.color;
         if (tipTitleColor === 'rgb(255, 0, 0)' || tipDateColor === 'rgb(255, 0, 0)' || tipContentColor === 'rgb(255, 0, 0)') {
             // nothing to do.
-        } else if (isDuplicateKey(taskName.value)) {
+        } else if (isNewTask && isDuplicateKey(taskName.value)) {
             alert('不能重复命名分类名称和任务标题');
         } else {
             confirmTask(taskName.value, taskDate.value, taskContent.value);
         }
+    });
+    // icon-finish, icon-edit
+    var iconFinish = document.getElementById('icon-finish');
+    addEvent(iconFinish, 'click', function() {
+        overlay('confirmDone');
+    });
+    var iconEdit = document.getElementById('icon-edit');
+    addEvent(iconEdit, 'click', function() {
+        editTask(false);
     });
 }
 
@@ -443,7 +555,9 @@ function validLength(taskElem, maxLen, tipElem) {
 }
 
 function validDateFmt(taskElem, tipElem) {
-    var reg = /(\d{4})-((1[0-2])|(0[1-9]))-(([12][0-9])|(3[01])|(0[1-9]))/;
+    var reg = new RegExp('^(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})'
+    + '-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))$'
+    + '|^((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)$');
     var isValid = reg.test(taskElem.value);
     if (isValid) {
         tipElem.style.color = '#999';
@@ -473,32 +587,63 @@ function cancelTask() {
     tipTitle.style.display = 'none';
     tipDate.style.display = 'none';
     tipContent.style.display = 'none';
+    var iconFinish = document.getElementById('icon-finish');
+    var iconEdit = document.getElementById('icon-edit');
+    iconFinish.style.visibility = 'hidden';
+    iconEdit.style.visibility = 'hidden';
 }
 
 function confirmTask(title, date, content) {
-    var cateName = getCurrentCateName();
     var newTask = {
         title: title,
         date: date,
         content: content,
-        done: 0     // undo
+        done: 0,     // undo
     };
-    addName(title);
-    var cateTask = localStorage.getItem('@' + cateName);
-    if (!cateTask) {
-        localStorage.setItem('@' + cateName, '{\"tasks\":[]}');
-        cateTask = localStorage.getItem('@' + cateName);
+    if (isNewTask) {
+        var cateName = getCurrentCateName();
+        newTask.directCate = '@' + cateName;
+        var cateTask = localStorage.getItem(newTask.directCate);
+        if (!cateTask) {
+            localStorage.setItem(newTask.directCate, '{\"tasks\":[]}');
+            cateTask = localStorage.getItem(newTask.directCate);
+        }
+        cateTask = JSON.parse(cateTask);
+        cateTask.tasks.push(newTask);
+    } else {
+        var lis = document.getElementById('task-list').getElementsByTagName('li');
+        for (var i=0; i<lis.length; i++) {
+            if (hasClass(lis[i], 'current-task')) {
+                var oldTitle = lis[i].textContent;
+                break;
+            }
+        }
+        for (i=0; i<arrTasks.length; i++) {
+            if (arrTasks[i].title === oldTitle) {
+                newTask.directCate = arrTasks[i].directCate;
+                break;
+            }
+        }
+        cateTask = JSON.parse(localStorage.getItem(newTask.directCate));
+        for (i=0; i<cateTask.tasks.length; i++) {
+            if (cateTask.tasks[i].title === oldTitle) {
+                cateTask.tasks[i] = newTask;
+                break;
+            }
+        }
+        rmValueStr('***名单', oldTitle);
     }
-    cateTask = JSON.parse(cateTask);
-    cateTask.tasks.push(newTask);   //???
-    localStorage.setItem('@' + cateName, JSON.stringify(cateTask));
+    localStorage.setItem(newTask.directCate, JSON.stringify(cateTask));
+    addName(newTask.title);
     // style
     readonlyStyle(newTask.done);
+    // get number of tasks
+    getNumTasks();
     // get task list
     var target = getCurrentCate() || document.getElementById('all-task');
     getTask(target);
     sortByDate();
-    showTask(-1, title);
+    showTask(-1, newTask.title);
 }
 
 function readonlyStyle(isDone) {
@@ -508,6 +653,7 @@ function readonlyStyle(isDone) {
     cursor.style.cursor = 'auto';
     var taskName = document.getElementById('taskname');
     var taskDate = document.getElementById('set-date');
+    taskDate.previousElementSibling.style.visibility = 'visible';
     var taskContent = document.getElementById('textarea');
     taskName.setAttribute('readonly', 'readonly');
     taskDate.setAttribute('readonly', 'readonly');
@@ -553,6 +699,17 @@ function getSubTask(cateName) {
     }
 }
 
+function getNumTasks() {
+    var allTask = document.getElementById('all-task');
+    getTask(allTask);
+    allTask.innerHTML = allTask.innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    var lis = document.getElementById('cate-list').getElementsByTagName('li');
+    for (var i=0; i<lis.length; i++) {
+        getTask(lis[i]);
+        lis[i].innerHTML = lis[i].innerHTML.replace(/\(\d+\)/, '(' + arrTasks.length + ')');
+    }
+}
+
 function sortByDate() {
     var tmp;
     for (var i=1; i<arrTasks.length; i++) {
@@ -583,12 +740,12 @@ function showTask(type, currentTitle) {
                     taskList.appendChild(elementUl);
                     elementUl = document.createElement('ul');
                 }
-                elementP.innerHTML = arrTasks[i].date;
+                elementP.textContent = arrTasks[i].date;
                 taskList.appendChild(elementP);
                 elementP = document.createElement('p');
                 tmpDate = arrTasks[i].date;
             }
-            elementLi.innerHTML = arrTasks[i].title;
+            elementLi.textContent = arrTasks[i].title;
             if (arrTasks[i].done) {
                 addClass(elementLi, 'done');
             }
@@ -624,4 +781,28 @@ function execFilter(event) {
         default:
             break;
     }
+    cancelTask();
+}
+
+function checkoutTask(event) {
+    var lis = document.getElementById('task-list').getElementsByTagName('li');
+    for (var i=0; i<lis.length; i++) {
+        removeClass(lis[i], 'current-task');
+    }
+    var target = event.target || event.srcElement;
+    addClass(target, 'current-task');
+    var tgtTitle = target.innerHTML;
+    for (var j=0; j<arrTasks.length; j++) {
+        var tgtTask = arrTasks[j];
+        if (tgtTask.title === tgtTitle) {
+            break;
+        }
+    }
+    var taskName = document.getElementById('taskname');
+    var taskDate = document.getElementById('set-date');
+    var taskContent = document.getElementById('textarea');
+    taskName.value = tgtTask.title;
+    taskDate.value = tgtTask.date;
+    taskContent.value = tgtTask.content;
+    readonlyStyle(tgtTask.done);
 }
