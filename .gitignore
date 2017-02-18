@@ -1,0 +1,10 @@
+# linter
+.eslintrc.json
+.stylelintrc.json
+
+# intellisense
+jsconfig.json
+/typings/*
+
+# local file
+/task/*
