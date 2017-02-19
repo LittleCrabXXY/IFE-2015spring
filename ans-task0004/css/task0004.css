@@ -1,0 +1,46 @@
+@charset "utf-8";
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font: 16px "Microsoft YaHei", sans-serif;
+}
+
+.header {
+    position: relative;
+    background-color: #0bf;
+    height: 60px;
+    line-height: 60px;
+    color: #fff;
+}
+
+.header > span {
+    visibility: hidden;
+    position: absolute;
+    padding: 0 10px;
+}
+
+.header > p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.list {
+    font-size: 1.25rem;
+}
+
+.list > li {
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    height: 50px;
+    line-height: 50px;
+    text-indent: 20px;
+}
+
+.list > li + li {
+    margin-top: -1px;
+}
