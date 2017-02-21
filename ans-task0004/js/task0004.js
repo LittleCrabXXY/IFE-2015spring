@@ -1,10 +1,14 @@
 window.onload = function() {
     initLocalStorage();
-    getList('###分类');
+    getList('###分类', false);
     var list = document.getElementById('list');
     delegateEvent(list, 'li', 'touchend', function(event) {
         var target = event.target || event.srcElement;
-        getList(target.innerText);
+        getList(target.innerText, false);
+    });
+    var backBtn = document.getElementById('back');
+    addEvent(backBtn, 'click', function() {
+        getList(crumb[crumb.length - 2], true);
     });
 };
 
@@ -12,7 +16,7 @@ window.onunload = function() {
     localStorage.clear();
 };
 
-var count = -1;
+var crumb = [];
 
 function initLocalStorage() {
     localStorage.clear();
@@ -32,10 +36,9 @@ function initLocalStorage() {
     localStorage.setItem('@测试任务', JSON.stringify(test));
 }
 
-function getList(key) {
+function getList(key, isBack) {
     var list = document.getElementById('list');
     list.innerHTML = '';
-    count++;
     if (localStorage.getItem(key)) {
         var cate = localStorage.getItem(key).split(',');
         for (var i=0; i<cate.length; i++) {
@@ -55,9 +58,16 @@ function getList(key) {
             list.appendChild(div);
         }
     }
-    if (count > 0) {
-        var backBtn = document.getElementById('back');
+    if (isBack) {
+        crumb.pop();
+    } else {
+        crumb.push(key);
+    }
+    var backBtn = document.getElementById('back');
+    if (crumb.length > 1) {
         setVisibility(backBtn, 'visible');
+    } else {
+        setVisibility(backBtn, 'hidden');
     }
 }
 
