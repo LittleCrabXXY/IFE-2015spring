@@ -7,7 +7,7 @@ window.onload = function() {
         getList(target.innerText, false);
     });
     var backBtn = document.getElementById('back');
-    addEvent(backBtn, 'click', function() {
+    addEvent(backBtn, 'touchend', function() {
         getList(crumb[crumb.length - 2], true);
     });
 };
@@ -69,6 +69,11 @@ function getList(key, isBack) {
     } else {
         setVisibility(backBtn, 'hidden');
     }
+    var title = document.getElementById('title');
+    if (key === '###分类') {
+        key = 'to-do';
+    }
+    title.innerText = key;
 }
 
 // utils
