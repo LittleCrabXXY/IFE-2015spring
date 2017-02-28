@@ -720,6 +720,7 @@ function sortByDate() {
                     arrTasks[k] = arrTasks[k-1];
                 }
                 arrTasks[j] = tmp;
+                break;
             }
         }
     }
