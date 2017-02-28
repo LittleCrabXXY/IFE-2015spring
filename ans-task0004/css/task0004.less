@@ -1,28 +1,36 @@
+// out: task0004.min.css
+
 @charset "utf-8";
+
+@rem: 16px;
+@h: 60px;
+@value_padding: 10px;
+@border_width: 1px;
+@border_style: solid;
+@border_color: #999;
 
 * {
     margin: 0;
     padding: 0;
 }
 
-@rem: 16px;
 html {
     font: @rem "Microsoft YaHei", sans-serif;
 }
 
-@h: 60px;
-@value_padding: 10px;
 .header {
     position: relative;
     background-color: #0bf;
     height: @h;
     line-height: @h;
     color: #fff;
+
     & > span {
         visibility: hidden;
         position: absolute;
         padding: 0 @value_padding;
     }
+
     & > p {
         font-size: @rem * 1.5;
         font-weight: 700;
@@ -30,11 +38,9 @@ html {
     }
 }
 
-@border_width: 1px;
-@border_style: solid;
-@border_color: #999;
 .list {
     font-size: @rem * 1.25;
+
     & > li,
     & > div {
         padding: 0 @value_padding * 2;
@@ -43,6 +49,7 @@ html {
         height: @h - 10;
         line-height: @h - 10;
     }
+
     & > li + li,
     & > div + div {
         margin-top: -1px;
