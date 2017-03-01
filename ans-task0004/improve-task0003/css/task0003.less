@@ -1,0 +1,402 @@
+// out: task0003.min.css
+
+@charset "utf-8";
+
+@min_width: 700px;
+@min_height: 300px;
+@width_list: 200px;
+
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.header {
+    @height_header: 60px;
+    .border();
+    min-width: @min_width;
+    height: @height_header;
+    .bgcolor(#ddd);
+
+    & > h2 {
+        text-indent: 10px;
+        .font(16px, 60px, 700);
+        .text-color(#999);
+    }
+}
+
+.main {
+    overflow: hidden;
+    margin-top: -1px;
+    min-width: @min_width;
+}
+
+.category {
+    .liststyle(cate);
+
+    & > p:first-child {
+        margin-top: 16px;
+        cursor: pointer;
+    }
+}
+
+.task {
+    .liststyle(task);
+}
+
+.inner-content {
+    .liststyle(inner);
+}
+
+.content {
+    float: left;
+    margin-left: -(@width_list * 2 + 3);
+    width: 100%;
+}
+
+.all-task,
+.info-cate-list {
+    @height_cate_header: 44px;
+    height: @height_cate_header;
+    .bgcolor(#f2f2f2);
+    .font(14px, 44px);
+    .text-color();
+}
+
+.cate-list {
+    @height_cate: 28px;
+    cursor: pointer;
+
+    & > li {
+        position: relative;
+        height: @height_cate;
+        text-indent: 30px;
+        .font(14px, 28px);
+    }
+
+    .default {
+        font-weight: 700;
+    }
+}
+
+.add {
+    @height_add: 40px;
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid #ccc;
+    height: @height_add;
+    width: 100%;
+    .bgcolor(#eee);
+    .text-color();
+    cursor: pointer;
+}
+
+.icon-floder {
+    .icon("../img/floder.png", 10px, 6px);
+}
+
+.icon-paper {
+    .icon("../img/paper.png", 30px, 6px);
+}
+
+.icon-delete {
+    @size_icon_del: 16px;
+    .icon("../img/delete.png");
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    visibility: hidden;
+    width: @size_icon_del;
+    height: @size_icon_del;
+}
+
+.icon-add {
+    .icon("../img/add.png", 12px, 12px);
+}
+
+.font12 {
+    .font(12px, 40px);
+    text-indent: 40px;
+}
+
+.current-cate {
+    .bgcolor();
+}
+
+.filter {
+    @height_filter: 40px;
+    border-bottom: 1px solid #ccc;
+    height: @height_filter;
+    .bgcolor(#eee);
+    font-size: 0;
+
+    & > span {
+        display: inline-block;
+        margin-top: 9px;
+        .border(1px, #eee);
+        width: @height_filter + 5;
+        height: @height_filter / 2;
+        text-align: center;
+        .font(12px, 20px);
+        .text-color();
+        cursor: pointer;
+
+        &:first-child {
+            margin-left: 10px;
+        }
+
+        &:hover {
+            .border();
+            .bgcolor();
+        }
+    }
+
+    .current-filter {
+        .border();
+        .bgcolor();
+    }
+}
+
+.task-list {
+    @height_task: 28px;
+    .bgcolor();
+
+    & > p {
+        height: @height_task;
+        .font(12px, 28px);
+        text-indent: 20px;
+        .bgcolor(#fafaee);
+    }
+
+    li {
+        height: @height_task;
+        .font(12px, 28px);
+        text-indent: 35px;
+        .bgcolor();
+        cursor: pointer;
+    }
+
+    .current-task {
+        .bgcolor(#f2f2f2);
+    }
+}
+
+.done {
+    .text-color(#238c00);
+}
+
+.task-title {
+    .task-head-style(#f2f2f2);
+
+    & > input {
+        font-weight: 700;
+    }
+}
+
+.task-date {
+    .task-head-style(#fafaee);
+
+    & > label {
+        visibility: hidden;
+        .font(14px);
+    }
+}
+
+.set {
+    border: none;
+    background: transparent;
+    .font(14px);
+    outline: none;
+}
+
+.icon-finish {
+    .icon-task("../img/finish.png", 70px);
+}
+
+.icon-edit {
+    .icon-task("../img/edit.png", 20px);
+}
+
+.textarea {
+    @min_height_textarea: 100px;
+    position: relative;
+    padding: 15px;
+    font-size: 0;
+
+    & > textarea {
+        overflow: auto;
+        border: none;
+        width: 100%;
+        min-height: @min_height_textarea;
+        .font(14px);
+        resize: none;
+        outline: none;
+    }
+}
+
+.btns {
+    @height_btns: 40px;
+    display: none;
+    margin-left: 50%;
+    height: @height_btns;
+    .font(12px, 40px);
+
+    & > input {
+        position: relative;
+        left: -50%;
+        .border(2px, #999);
+        height: @height_btns - 5;
+        width: @height_btns - 15;
+        .bgcolor();
+        cursor: pointer;
+    }
+}
+
+.btn-cancel {
+    margin-left: 40px;
+}
+
+.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    .bgcolor(#000);
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+}
+
+.mask-input {
+    position: absolute;
+    bottom: 10px;
+    left: 40px;
+    width: 120px;
+    height: 16px;
+}
+
+.confirm {
+    position: fixed;
+    .border(5px, #999);
+    width: 200px;
+    height: 70px;
+    .bgcolor();
+    .font(18px, 30px, 700);
+    text-align: center;
+}
+
+.confirm-ok {
+    .confirmstyle();
+}
+
+.confirm-cancel {
+    .confirmstyle();
+    margin-left: 20px;
+}
+
+#taskname {
+    width: 70%;
+}
+
+#set-date {
+    width: 55%;
+}
+
+.tips {
+    display: none;
+    position: absolute;
+    right: 15px;
+    bottom: 17px;
+    .font();
+    text-indent: 0;
+    .text-color(#999);
+}
+
+.cursor {
+    cursor: auto;
+}
+
+.border(@width: 1px, @color: #ccc) {
+    border: @width solid @color;
+}
+
+.bgcolor(@color: #fff) {
+    background-color: @color;
+}
+
+.font(@size: 12px, @lineheight: normal, @weight: 400) {
+    font: @weight @size/@lineheight "Microsoft YaHei", sans-serif;
+}
+
+.text-color(@color: #333) {
+    color: @color;
+}
+
+.liststyle(@_) {
+    position: relative;
+    padding-bottom: 41px;
+    .border();
+    min-height: @min_height;
+}
+
+.liststyle(cate) {
+    .listcommom();
+    .bgcolor(#f2f2f2);
+    text-indent: 10px;
+}
+
+.liststyle(task) {
+    .listcommom();
+    margin-left: -1px;
+}
+
+.liststyle(inner) {
+    margin-left: @width_list * 2 + 2;
+    min-width: @min_width - @width_list * 2;
+}
+
+.listcommom() {
+    overflow: hidden;
+    float: left;
+    width: @width_list;
+}
+
+.icon(@url, @x: 0, @y: 0) {
+    background-image: url(@url);
+    background-repeat: no-repeat;
+    background-position: @x, @y;
+}
+
+.task-head-style(@bgcolor) {
+    @height_task_head: 50px;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+    height: @height_task_head;
+    text-indent: 15px;
+    line-height: @height_task_head;
+    .bgcolor(@bgcolor);
+}
+
+.icon-task(@url, @right, @top: 9px) {
+    @size_icon: 32px;
+    visibility: hidden;
+    position: absolute;
+    top: @top;
+    right: @right;
+    display: inline-block;
+    width: @size_icon;
+    height: @size_icon;
+    background: url(@url) no-repeat;
+    cursor: pointer;
+}
+
+.confirmstyle() {
+    display: inline-block;
+    .border(2px, #999);
+    width: 40px;
+    height: 25px;
+    .bgcolor();
+    .font(14px);
+    cursor: pointer;
+}
