@@ -13,7 +13,7 @@ var path = require('path');
 
 var hostname = 'localhost';
 var port = 8080;
-var ROOT = '../';
+var ROOT = './ans-task0002';
 
 var mongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
