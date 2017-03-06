@@ -250,11 +250,33 @@ window.onload = function() {
         }, 8);
     }
     // 输入提示框
+    /* ====== 这是伪造的提示数据 - begin ====== */
+    var suggestData = ['Simon', 'Erik', 'Kener'];
+    /* ====== 这是伪造的提示数据 - end ====== */
     addEvent($('#searchInput'), 'keyup', function() {
         var text = trim(this.value);    // 去除字符串头尾空白
         var searchTip = $('#searchTip');
         searchTip.innerHTML = '';
         if (text !== "") {
+            /* ====== 使用伪造的提示数据，不连接后台 - begin ====== */
+            // 显示提示内容
+            if (suggestData.length > 0) {
+                var li, liText;
+                for (var i = 0; i < suggestData.length; i++) {
+                    li = document.createElement('li');
+                    liText = document.createTextNode(suggestData[i]);
+                    li.appendChild(liText);
+                    searchTip.appendChild(li);
+                }
+                searchTip.style.display = 'block';
+            } else {
+                searchTip.style.display = 'none';
+            }
+            /* ====== 使用伪造的提示数据，不连接后台 - end ====== */
+
+            /** 
+             * 后台连接 Node.js HTTP server 和 MongoDB 数据库，使用Ajax获取提示数据
+             * 
             // 将数据送后台，并接收后台返回的数据
             var url = window.location.origin + '/node/suggestServer.js';
             var onsuccess = function(str, xhr) {
@@ -291,6 +313,7 @@ window.onload = function() {
                 onsuccess: onsuccess,
                 onfail: onfail
             });
+             */
         } else {
             searchTip.style.display = 'none';
         }
