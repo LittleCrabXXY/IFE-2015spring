@@ -42,7 +42,10 @@
     *移动web开发*、*CSS Processing*、*前端安全*、*性能优化*、*JavaScript模块化*、*前端工程化*。
 
     + *移动web开发*：请使用移动终端访问[移动端简化版to-do list](http://littlecrabxxy.github.io/IFE-2015spring/ans-task0004/task0004.html)，
-    或在PC端浏览器中开启移动设备调试模式。[效果截图](https://github.com/LittleCrabXXY/IFE-2015spring/tree/master/ans-task0004/mobile-screenshot)
+    或在PC端浏览器中开启*设备模式*。[效果截图](https://github.com/LittleCrabXXY/IFE-2015spring/tree/master/ans-task0004/mobile-screenshot)
+
+    + 其他方面：综合改进task0003的源码，已完成*CSS Processing*、*性能优化*。
+    [改进的源码链接](https://github.com/LittleCrabXXY/IFE-2015spring/tree/master/ans-task0004/improve-task0003)
 
 * **任务实践过程中的一些小练习**
 
