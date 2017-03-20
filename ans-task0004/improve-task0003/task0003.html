@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="minify/task0003.min.css">
+    <title>GTD Tools</title>
+</head>
+<body>
+    <div class="header" id="header">
+        <h2>GTD Tools</h2>
+    </div>
+    <div class="main">
+        <div class="category" id="category">
+            <p class="all-task" id="all-task">所有任务&nbsp;(0)</p>
+            <p class="info-cate-list">分类列表&nbsp;</p>
+            <ul class="cate-list" id="cate-list">
+                <li class="default icon-floder current-cate" id="default">默认分类&nbsp;(0)</li>
+            </ul>
+            <div class="add font12 icon-add" id="add-cate">新增分类</div>
+        </div>
+        <div class="task" id="task">
+            <div class="filter" id="filter">
+                <span class="current-filter">所有</span>
+                <span>未完成</span>
+                <span>已完成</span>
+            </div>
+            <div class="task-list" id="task-list"></div>
+            <div class="add font12 icon-add" id="add-task">新增任务</div>
+        </div>
+        <div class="content">
+            <div class="inner-content" id="inner-content">
+                <div class="task-title" id="task-title">
+                    <input class="set" type="text" id="taskname" readonly>
+                    <span class="icon-finish" id="icon-finish" title="已完成"></span>
+                    <span class="icon-edit" id="icon-edit" title="编辑"></span>
+                    <span class="tips" id="tip-title">任务标题&nbsp;0/20</span>
+                </div>
+                <div class="task-date" id="task-date">
+                    <label for="set-date">任务日期：</label>
+                    <input class="set" type="text" id="set-date" readonly>
+                    <span class="tips" id="tip-date">yyyy-mm-dd</span>
+                </div>
+                <div class="textarea">
+                    <textarea id="textarea" readonly></textarea>
+                    <span class="tips" id="tip-content">任务内容&nbsp;0/500</span>
+                </div>
+                <div class="add cursor" id="cursor">
+                    <span class="btns" id="btns">
+                        <input id="btn-confirm" type="button" value="确认">
+                        <input id="btn-cancel" class="btn-cancel" type="button" value="取消">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="minify/task0003_util.min.js"></script>
+</body>
+</html>
