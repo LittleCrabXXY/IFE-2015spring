@@ -1,10 +1,11 @@
-// out: task0003.min.css
+// out: task0003.css
 
 @charset "utf-8";
 
 @min_width: 700px;
 @min_height: 300px;
 @width_list: 200px;
+@url_icons: '/minify/icons.png';
 
 * {
     margin: 0;
@@ -93,16 +94,16 @@
 }
 
 .icon-floder {
-    .icon("../img/floder.png", 10px, 6px);
+    .icon('/minify/floder.png', 10px, 6px);
 }
 
 .icon-paper {
-    .icon("../img/paper.png", 30px, 6px);
+    .icon('/minify/paper.png', 30px, 6px);
 }
 
 .icon-delete {
     @size_icon_del: 16px;
-    .icon("../img/delete.png");
+    .icon('/minify/icons.png');
     position: absolute;
     right: 10px;
     top: 6px;
@@ -112,7 +113,7 @@
 }
 
 .icon-add {
-    .icon("../img/add.png", 12px, 12px);
+    .icon('/minify/add.png', 12px, 12px);
 }
 
 .font12 {
@@ -211,11 +212,11 @@
 }
 
 .icon-finish {
-    .icon-task("../img/finish.png", 70px);
+    .icon-task(-16px, 0, 70px);
 }
 
 .icon-edit {
-    .icon-task("../img/edit.png", 20px);
+    .icon-task(-48px, 0, 20px);
 }
 
 .textarea {
@@ -362,10 +363,10 @@
     width: @width_list;
 }
 
-.icon(@url, @x: 0, @y: 0) {
+.icon(@url: @url_icons, @x: 0, @y: 0) {
     background-image: url(@url);
     background-repeat: no-repeat;
-    background-position: @x, @y;
+    background-position: @x @y;
 }
 
 .task-head-style(@bgcolor) {
@@ -378,7 +379,7 @@
     .bgcolor(@bgcolor);
 }
 
-.icon-task(@url, @right, @top: 9px) {
+.icon-task(@offsetX, @offsetY, @right, @top: 9px) {
     @size_icon: 32px;
     visibility: hidden;
     position: absolute;
@@ -387,7 +388,8 @@
     display: inline-block;
     width: @size_icon;
     height: @size_icon;
-    background: url(@url) no-repeat;
+    background: url(@url_icons) no-repeat;
+    background-position: @offsetX @offsetY;
     cursor: pointer;
 }
 
